@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var myPythonScriptPath = 'python.py';
+var myPythonScriptPath = 'getDWD.py';
 
 // Use python shell
 var PythonShell = require('python-shell');
@@ -19,19 +19,6 @@ router.get('/:id', function(req, res, next) {
         // results is an array consisting of messages collected during execution
         res.send(results)
     });
-
-  // And insert something like this instead:
-//   res.json([{
-//     id: 1,
-//     username: "samsepi0l"
-// }, {
-//     id: 2,
-//     username: "D0loresH4ze"
-// }]);
-
-
-
-
 });
 
 module.exports = router;
