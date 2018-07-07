@@ -33,7 +33,7 @@ class Statistics extends React.Component{
         this.getStatistics = this.getStatistics.bind(this)
         this.getAllStats = this.getAllStats.bind(this);
         this.getCompareStatistics = this.getCompareStatistics.bind(this);
-
+        this.getDWD = this.getDWD.bind(this);
         this.handleChangeStart = this.handleChangeStart.bind(this);
         this.handleChangeEnd = this.handleChangeEnd.bind(this);
 
@@ -44,70 +44,40 @@ class Statistics extends React.Component{
           startDate: date
         });
       }
-      handleChangeEnd(date) {
-          console.log(date)
-        this.setState({
-          endDate: date
-        });
+    handleChangeEnd(date) {
+        console.log(date)
+    this.setState({
+        endDate: date
+    });
+    }
+
+    getDWD(){
+        fetch('/python/00150')
+        .then(res => res.text())
+        .then(json => (JSON.parse(json)))
+        .then(json =>{
+                      const dates = JSON.parse(json[0].replace(/'/g, '"'))
+                      const values = JSON.parse(json[1].replace(/'/g, '"'))
+                      this.setState({dates,values})
+                    })
       }
 
-        getStatistics(from,to){
+    getStatistics(from,to){
 
-                    const month1 = this.state.month[from._d.getMonth()]
-                    const month2 = this.state.month[to._d.getMonth()]
-                    
-                    const url ='https://api.opensensemap.org/statistics/descriptive?senseboxid='
-                                +this.state.senseBoxID+'&phenomenon='
-                                +this.state.phenomenon+
-                                '&from-date='+from._d.toISOString()+'&to-date='+to._d.toISOString()+
-                                '&operation=arithmeticMean&window=86400000&format=json'
+                const month1 = this.state.month[from._d.getMonth()]
+                const month2 = this.state.month[to._d.getMonth()]
+                
+                const url ='https://api.opensensemap.org/statistics/descriptive?senseboxid='
+                            +this.state.senseBoxID+'&phenomenon='
+                            +this.state.phenomenon+
+                            '&from-date='+from._d.toISOString()+'&to-date='+to._d.toISOString()+
+                            '&operation=arithmeticMean&window=86400000&format=json'
 
 
-                    this.setState({
-                        data:[],
-                        statistic_array:[]
-                    })
-                    fetch(url)
-                    .then((response)=>response.json())
-                    .then((json)=>
-                    {
-                        Object.keys(json[0]).forEach(key =>{
-                        if(key!=="sensorId"){
-                            this.setState((currentState)=>{
-                                return {
-                                    data:currentState.data.concat([{
-                                        Time:key.substring(5,10),Value:Math.floor([json[0][key]]*100)/100
-                                    }]),
-                                    statistic_array:currentState.statistic_array.concat(Math.floor([json[0][key]]*100)/100),
-                                }
-                            })
-
-                        }})
-                    }
-                )                
-                .then(()=>{
-                    this.setState({
-                        label:'From '+ month1 + ' to ' + month2,
-                    })
+                this.setState({
+                    data:[],
+                    statistic_array:[]
                 })
-                } //End get Statistics
-
-        getCompareStatistics(from,to){
-            
-
-            const month1 = this.state.month[from._d.getMonth()]
-            const month2 = this.state.month[to._d.getMonth()]
-
-            const url ='https://api.opensensemap.org/statistics/descriptive?senseboxid='
-                +this.state.senseBoxID+'&phenomenon='
-                +this.state.phenomenon+
-                '&from-date='+from._d.toISOString()+'&to-date='+to._d.toISOString()+'&operation=arithmeticMean&window=86400000&format=json'
-            
-            this.setState({
-                data_compare:[],
-                statistic_array_compare:[]
-            })  
-            console.log(url);
                 fetch(url)
                 .then((response)=>response.json())
                 .then((json)=>
@@ -116,110 +86,149 @@ class Statistics extends React.Component{
                     if(key!=="sensorId"){
                         this.setState((currentState)=>{
                             return {
-                                data_compare:currentState.data_compare.concat([{
+                                data:currentState.data.concat([{
                                     Time:key.substring(5,10),Value:Math.floor([json[0][key]]*100)/100
                                 }]),
-                                statistic_array_compare:currentState.statistic_array_compare.concat(Math.floor([json[0][key]]*100)/100),
-                                
+                                statistic_array:currentState.statistic_array.concat(Math.floor([json[0][key]]*100)/100),
                             }
                         })
 
                     }})
+                }
+            )                
+            .then(()=>{
+                this.setState({
+                    label:'From '+ month1 + ' to ' + month2,
                 })
-                .then(()=>{
-                    this.setState({
-                        label_compare:'From '+ month1 + ' to ' + month2,
-                    })
-                })
-        }
-        
-
-        
-        componentDidMount(){
-            this.getAllStats();
-        }
-        getAllStats(){
-
-            this.getStatistics(this.state.startDate,this.state.endDate);
-            const diff = this.state.endDate._d.getMonth() - this.state.startDate._d.getMonth();
-            this.getCompareStatistics(this.state.startDate.subtract(diff,'months'),this.state.endDate.subtract(diff,'months'));
-            this.setState((currentState)=>{
-                startDate:currentState.startDate.add(diff,'months');
-                endDate:currentState.endDate.add(diff,'months')
             })
+            } //End get Statistics
 
-        }
-        render(){
-            if(this.state.data.length>1 && this.state.data_compare.length>1){
-                
-                return(
-                    <div>
-                    <p>These are the <b>mean</b> of your measurements for your sensor from the last months :</p>
-                    From:<DatePicker
-                        selected={this.state.startDate}
-                        selectsStart
-                        startDate={this.state.startDate}
-                        endDate={this.state.endDate}
-                        onChange={this.handleChangeStart}
-                        popperPlacement="bottom-end"
-                        className="cal"
-                        dateFormat="LLL"
-                    /> 
+    getCompareStatistics(from,to){
+        
 
-                    To:<DatePicker
-                        selected={this.state.endDate}
-                        selectsEnd
-                        startDate={this.state.startDate}
-                        endDate={this.state.endDate}
-                        onChange={this.handleChangeEnd}
-                        popperPlacement="bottom-end"
-                        className="cal"
-                        dateFormat="LLL"
+        const month1 = this.state.month[from._d.getMonth()]
+        const month2 = this.state.month[to._d.getMonth()]
 
-                    />
-                    <button className="cal" onClick={this.getAllStats} >Apply filter</button>
+        const url ='https://api.opensensemap.org/statistics/descriptive?senseboxid='
+            +this.state.senseBoxID+'&phenomenon='
+            +this.state.phenomenon+
+            '&from-date='+from._d.toISOString()+'&to-date='+to._d.toISOString()+'&operation=arithmeticMean&window=86400000&format=json'
+        
+        this.setState({
+            data_compare:[],
+            statistic_array_compare:[]
+        })  
+        console.log(url);
+            fetch(url)
+            .then((response)=>response.json())
+            .then((json)=>
+            {
+                Object.keys(json[0]).forEach(key =>{
+                if(key!=="sensorId"){
+                    this.setState((currentState)=>{
+                        return {
+                            data_compare:currentState.data_compare.concat([{
+                                Time:key.substring(5,10),Value:Math.floor([json[0][key]]*100)/100
+                            }]),
+                            statistic_array_compare:currentState.statistic_array_compare.concat(Math.floor([json[0][key]]*100)/100),
+                            
+                        }
+                    })
 
-                    <div className="row">
-                         {/* <LineChart className="des" data={data} options={options} width="1000" height="350"/> */}
-                         <LineChart width={1000} height={400} data={this.state.data}  margin={{ top: 5, right: 20, bottom: 5, left: 40 }} syncId="newID" >
-                                <Line name={this.state.label} type="linear" dataKey="Value" stroke="#4EAF47" />
-                                <CartesianGrid stroke="#ccc"/>
-                                <XAxis dataKey="Time"/>
-                                <YAxis/>
-                                <Tooltip/>
-                                <Legend verticalAlign="top" height={36}/>
-                        </LineChart>
-                        <br></br>
-                        <ul className="results">
-                                <Maxmium data={this.state.statistic_array}/>
-                                <Minimum data={this.state.statistic_array}/>
-                                <Average data = {this.state.statistic_array}/>
-                                <Shift data = {this.state.statistic_array}
-                                        data_compare={this.state.statistic_array_compare}/>
-                        </ul>
-                        <br></br>
-                        <LineChart width={1000} height={400} data={this.state.data_compare}  margin={{ top: 5, right: 20, bottom: 5, left: 40 }} syncId="newID" >
-                                <Line name={this.state.label_compare} type="linear" dataKey="Value" stroke="#4EAF47" />
-                                <CartesianGrid stroke="#ccc"/>
-                                <XAxis dataKey="Time"/>
-                                <YAxis/>
-                                <Tooltip/>
-                                <Legend verticalAlign="top" height={36}/>
+                }})
+            })
+            .then(()=>{
+                this.setState({
+                    label_compare:'From '+ month1 + ' to ' + month2,
+                })
+            })
+    }
+    componentDidMount(){
+        this.getAllStats();
+    }
+    getAllStats(){
 
-                        </LineChart>
-                        <ul className="results"> 
-                            <Maxmium data={this.state.statistic_array_compare}/>
-                            <Minimum data={this.state.statistic_array_compare}/>
-                            <Average data = {this.state.statistic_array_compare}/>
+        this.getStatistics(this.state.startDate,this.state.endDate);
+        const diff = this.state.endDate._d.getMonth() - this.state.startDate._d.getMonth();
+        this.getCompareStatistics(this.state.startDate.subtract(diff,'months'),this.state.endDate.subtract(diff,'months'));
+        this.setState((currentState)=>{
+            startDate:currentState.startDate.add(diff,'months');
+            endDate:currentState.endDate.add(diff,'months')
+        })
 
-                        </ul>
-                    </div>
-                    </div>
-                )
-            }
+    }
+    render(){
+        if(this.state.data.length>1 && this.state.data_compare.length>1){
+            
             return(
-                <Loading/>
+                <div>
+                <p>These are the <b>mean</b> of your measurements for your sensor from the last months :</p>
+                From:<DatePicker
+                    selected={this.state.startDate}
+                    selectsStart
+                    startDate={this.state.startDate}
+                    endDate={this.state.endDate}
+                    onChange={this.handleChangeStart}
+                    popperPlacement="bottom-end"
+                    className="cal"
+                    dateFormat="LLL"
+                /> 
+
+                To:<DatePicker
+                    selected={this.state.endDate}
+                    selectsEnd
+                    startDate={this.state.startDate}
+                    endDate={this.state.endDate}
+                    onChange={this.handleChangeEnd}
+                    popperPlacement="bottom-end"
+                    className="cal"
+                    dateFormat="LLL"
+
+                />
+                <button className="cal" onClick={this.getAllStats} >Apply filter</button>
+
+                <div className="row">
+                        {/* <LineChart className="des" data={data} options={options} width="1000" height="350"/> */}
+                        <LineChart width={1000} height={400} data={this.state.data}  margin={{ top: 5, right: 20, bottom: 5, left: 40 }} syncId="newID" >
+                            <Line name={this.state.label} type="linear" dataKey="Value" stroke="#4EAF47" />
+                            <CartesianGrid stroke="#ccc"/>
+                            <XAxis dataKey="Time"/>
+                            <YAxis/>
+                            <Tooltip/>
+                            <Legend verticalAlign="top" height={36}/>
+                    </LineChart>
+                    <br></br>
+                    <ul className="results">
+                            <Maxmium data={this.state.statistic_array}/>
+                            <Minimum data={this.state.statistic_array}/>
+                            <Average data = {this.state.statistic_array}/>
+                            <Shift data = {this.state.statistic_array}
+                                    data_compare={this.state.statistic_array_compare}/>
+                    </ul>
+                    <br></br>
+                    <LineChart width={1000} height={400} data={this.state.data_compare}  margin={{ top: 5, right: 20, bottom: 5, left: 40 }} syncId="newID" >
+                            <Line name={this.state.label_compare} type="linear" dataKey="Value" stroke="#4EAF47" />
+                            <CartesianGrid stroke="#ccc"/>
+                            <XAxis dataKey="Time"/>
+                            <YAxis/>
+                            <Tooltip/>
+                            <Legend verticalAlign="top" height={36}/>
+
+                    </LineChart>
+                    <ul className="results"> 
+                        <Maxmium data={this.state.statistic_array_compare}/>
+                        <Minimum data={this.state.statistic_array_compare}/>
+                        <Average data = {this.state.statistic_array_compare}/>
+
+                    </ul>
+                </div>
+                </div>
             )
+        }
+        return(
+            <Loading/>
+        )
     }
 }
+
 export default Statistics
