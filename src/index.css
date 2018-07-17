@@ -60,7 +60,11 @@ h1 {
 .results{
   margin-top:2rem
 }
-.cal {
+.cals {
   margin-left:50px;
   margin-top:5px;
+}
+.carousel {
+  margin-left:-33%;
+  border-style: solid
 }

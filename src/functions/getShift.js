@@ -14,8 +14,16 @@ export default function Shift(props){
         
         shift = (( sum_data - sum_data_compare ) / sum_data_compare) * 100 
         shift = Math.floor(shift*100)/100
+    if(shift>0){
     return(
-        <li>Shift from last month:{shift}%</li>
+        <li>This month has been warmer on average than last months({shift}%)</li>
 
     )
+}
+if(shift<0){
+    return(
+        <li>This month has been colder on average than last months({shift}%)</li>
+
+    )
+}
 }

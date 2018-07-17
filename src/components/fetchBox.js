@@ -2,7 +2,7 @@ import React from 'react'
 import {Link,Route,  BrowserRouter,} from 'react-router-dom'
 import Modal from 'react-modal'
 import Data from './Data'
-
+import Menu from './Menu'
 /* Styles for the modal*/
 const customStyles = {
     content : {
@@ -24,7 +24,7 @@ class FetchBox extends React.Component{
         super(props)
         this.state={
             input:'',
-            metadata:[],
+            senseBoxData:{},
             senseboxid:'',
             sensors:[],
             loading:false,
@@ -66,7 +66,7 @@ class FetchBox extends React.Component{
             modalIsOpen:false
           })
 
-        const boxURL = `https://api.opensensemap.org/boxes/`+id //'+this.state.input'
+        const boxURL =`https://api.opensensemap.org/boxes/`+id //'+this.state.input'
         fetch(boxURL)
         .catch((error) => {
             this.setState({
@@ -77,9 +77,7 @@ class FetchBox extends React.Component{
         })
         .then((response) => response.json())
         .then((json)=>this.setState({
-            metadata:json,
-            sensors:json.sensors,
-            first:json.sensors[0].title,
+            senseBoxData:json,
             loading:false,
             }))
         .then(this.reverseGeocoding)
@@ -101,18 +99,12 @@ class FetchBox extends React.Component{
         }// End reverseGeocoding
     componentDidMount(){
         this.setState({modalIsOpen: true});
-
-
-
     }
     componentDidUnMount(){
         this.setState({modalIsOpen: false});
-
     }
 
-    render(){
-
-        
+    render(){ 
         return (
         <BrowserRouter>
             <div>
@@ -137,7 +129,7 @@ class FetchBox extends React.Component{
                             onChange={this.updateInput}
                         />
                         <Link 
-                        to={'/data'}>
+                        to={'/Overview'}>
                             <button 
                                 onClick={this.fetchBox} 
                                 className="btn header-btn"
@@ -147,11 +139,9 @@ class FetchBox extends React.Component{
                         </Link>
                     </form>
                 </Modal>
-                <Route path='/data' 
-                component={() => (<Data metadata={this.state.metadata} 
-                                        sensors={this.state.sensors}
-                                        first ={this.state.first}
-                                        geocoding={this.state.geocodingResult}
+                <Route path='/Overview' 
+                component={() => (<Menu senseBox={this.state.senseBoxData} 
+                                    geocodingResult={this.state.geocodingResult}
                     />)}
                 />
             </div>

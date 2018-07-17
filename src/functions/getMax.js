@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function Maxium(props){
+export default function Maximum(props){
 
         var maxValue=-500000;
         props.data.map((data)=>(

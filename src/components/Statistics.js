@@ -1,42 +1,26 @@
 import React from 'react'
-import Loading from './Loading'
-import Maxmium from '../functions/getMax'
-import Minimum from '../functions/getMin'
-import Average from '../functions/getAverage'
-import Shift from '../functions/getShift'
-import { LineChart, Line,CartesianGrid,XAxis,YAxis,Tooltip,Legend } from 'recharts';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css';
-
+import Stats from './Stats'
+import Analysis from './Analysis'
+import Loading from './Loading'
+import Carousel from 'nuka-carousel'
+/* Gets called from Menu with props :senseBoxID sensorID + phenomenon und senseBoxLocation*/
 class Statistics extends React.Component{
 
     constructor(props){
         super(props)
         this.state={
-            url:'',
-            statistic_array:[],
-            statistic_array_compare:[],
-            data:[],
-            label:'',
-            label_compare:'',
-            data_compare:[],
-            finished:false,
-            senseBoxID:props.senseBoxID,
-            phenomenon:props.phenomenon,
-            month:["January","February","March","April","May","June","July","August","September","October","November","December"],
-            startDate:moment().subtract(1,'months'),
-            endDate:moment(),
-            startDate_compare:moment().subtract(1,'months'),
-            endDate_compare:moment().subtract(2,'months')
+            dwd_stations:[],
+            data:[]
         }
         this.getStatistics = this.getStatistics.bind(this)
-        this.getAllStats = this.getAllStats.bind(this);
-        this.getCompareStatistics = this.getCompareStatistics.bind(this);
         this.getDWD = this.getDWD.bind(this);
         this.handleChangeStart = this.handleChangeStart.bind(this);
         this.handleChangeEnd = this.handleChangeEnd.bind(this);
-
+        this.getStations = this.getStations.bind(this);
+        this.getNearest = this.getNearest.bind(this);
     }//End constructor
 
     handleChangeStart(date) {
@@ -45,189 +29,138 @@ class Statistics extends React.Component{
         });
       }
     handleChangeEnd(date) {
-        console.log(date)
-    this.setState({
-        endDate: date
-    });
+        this.setState({
+            endDate: date
+        });
     }
 
-    getDWD(){
-        fetch('/python/00150')
+        /* Function that calls API and gets all the DWD stations with their 
+      coordinates and names
+      needs states : dwd_stations
+      */
+     getStations(){
+        fetch('/stations')
+        .then(res =>res.text())
+        .then(text=>JSON.parse(text))
+        .then(json => {
+                    const ids = JSON.parse(json[0].replace(/'/g, '"'));
+                    const lats = JSON.parse(json[1].replace(/'/g, '"'));
+                    const lons = JSON.parse(json[2].replace(/'/g, '"'));
+                    var dwd_stations = []
+                    for(var i =0 ;i<ids.length;i++){
+                        dwd_stations.push({id:ids[i],location:{lat:lats[i],lon:lons[i]}})
+                    }
+                    this.setState({dwd_stations:dwd_stations})
+        })
+        .then(()=>{this.getDWD()})
+
+        }
+    /* helper function to determine the distance between
+    two coordinates 
+    source : https://stackoverflow.com/questions/365826/calculate-distance-between-2-gps-coordinates
+    */
+     distanceInKmBetweenEarthCoordinates(lat1, lon1, lat2, lon2) {
+        var earthRadiusKm = 6371;
+      
+        var dLat = (lat2-lat1)* Math.PI / 180;
+        var dLon = (lon2-lon1)* Math.PI / 180;
+      
+        lat1 = lat1*Math.PI / 180;
+        lat2 = lat2*Math.PI / 180;
+      
+        var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+        return earthRadiusKm * c;
+      }
+    /* Takes location of sensebox and determines the nearest weather station of the dwd 
+        needs getStations() to be executed first*/
+    getNearest(lat,lon){
+        console.log(lat)
+        console.log(this.state.dwd_stations)
+          var nearestid;
+          var mindistance=5000000000;
+          Object.keys(this.state.dwd_stations).forEach(key=>{
+              const distance = this.distanceInKmBetweenEarthCoordinates(lat,lon,this.state.dwd_stations[key].location.lat,this.state.dwd_stations[key].location.lon);
+              if(mindistance>distance){
+                nearestid =this.state.dwd_stations[key].id;
+                }
+              mindistance=Math.min(distance,mindistance)
+              })
+          /*While loop to get the id in the right format 
+            e.g. '44' -> '00044'
+          */
+          while(nearestid.length!==5){
+            nearestid='0'+nearestid
+          }
+          return nearestid;
+        }
+    /* Funcion that gets the data from a dwd station
+    runs getStation() */
+    getDWD(){        const url = '/python/'+ this.getNearest(this.props.senseBoxLocation[1],this.props.senseBoxLocation[0]);
+        fetch(url)
         .then(res => res.text())
         .then(json => (JSON.parse(json)))
         .then(json =>{
                       const dates = JSON.parse(json[0].replace(/'/g, '"'))
                       const values = JSON.parse(json[1].replace(/'/g, '"'))
-                      this.setState({dates,values})
+                      var data_dwd = []
+                      for(var i =0 ;i<dates.length;i++){
+                          data_dwd.push({date:dates[i],value:values[i]})
+                      }
+                      this.setState({data_dwd})
                     })
       }
 
-    getStatistics(from,to){
-
-                const month1 = this.state.month[from._d.getMonth()]
-                const month2 = this.state.month[to._d.getMonth()]
-                
+    getStatistics(){
                 const url ='https://api.opensensemap.org/statistics/descriptive?senseboxid='
-                            +this.state.senseBoxID+'&phenomenon='
-                            +this.state.phenomenon+
-                            '&from-date='+from._d.toISOString()+'&to-date='+to._d.toISOString()+
-                            '&operation=arithmeticMean&window=86400000&format=json'
-
-
-                this.setState({
-                    data:[],
-                    statistic_array:[]
-                })
-                fetch(url)
+                            +this.props.senseBoxID+'&phenomenon='
+                            +this.props.phenomenon+
+                            '&from-date=2018-06-16T12:25:22.929Z&to-date=2018-07-16T12:25:22.929Z&operation=arithmeticMean&window=86400000&format=json'
+                            fetch(url)
                 .then((response)=>response.json())
                 .then((json)=>
-                {
+                {   var data=[]
                     Object.keys(json[0]).forEach(key =>{
                     if(key!=="sensorId"){
-                        this.setState((currentState)=>{
-                            return {
-                                data:currentState.data.concat([{
-                                    Time:key.substring(5,10),Value:Math.floor([json[0][key]]*100)/100
-                                }]),
-                                statistic_array:currentState.statistic_array.concat(Math.floor([json[0][key]]*100)/100),
-                            }
-                        })
-
+                        for(var i =0 ;i<json.length;i++){
+                            data.push({date:key.substring(5,10),value:Math.floor([json[0][key]]*100)/100})
+                        }
                     }})
+                    this.setState({data})
                 }
             )                
-            .then(()=>{
-                this.setState({
-                    label:'From '+ month1 + ' to ' + month2,
-                })
-            })
             } //End get Statistics
 
-    getCompareStatistics(from,to){
-        
-
-        const month1 = this.state.month[from._d.getMonth()]
-        const month2 = this.state.month[to._d.getMonth()]
-
-        const url ='https://api.opensensemap.org/statistics/descriptive?senseboxid='
-            +this.state.senseBoxID+'&phenomenon='
-            +this.state.phenomenon+
-            '&from-date='+from._d.toISOString()+'&to-date='+to._d.toISOString()+'&operation=arithmeticMean&window=86400000&format=json'
-        
-        this.setState({
-            data_compare:[],
-            statistic_array_compare:[]
-        })  
-        console.log(url);
-            fetch(url)
-            .then((response)=>response.json())
-            .then((json)=>
-            {
-                Object.keys(json[0]).forEach(key =>{
-                if(key!=="sensorId"){
-                    this.setState((currentState)=>{
-                        return {
-                            data_compare:currentState.data_compare.concat([{
-                                Time:key.substring(5,10),Value:Math.floor([json[0][key]]*100)/100
-                            }]),
-                            statistic_array_compare:currentState.statistic_array_compare.concat(Math.floor([json[0][key]]*100)/100),
-                            
-                        }
-                    })
-
-                }})
-            })
-            .then(()=>{
-                this.setState({
-                    label_compare:'From '+ month1 + ' to ' + month2,
-                })
-            })
+    componentWillMount(){
+        this.getStations()
     }
     componentDidMount(){
-        this.getAllStats();
+        this.getStatistics()
+
     }
-    getAllStats(){
-
-        this.getStatistics(this.state.startDate,this.state.endDate);
-        const diff = this.state.endDate._d.getMonth() - this.state.startDate._d.getMonth();
-        this.getCompareStatistics(this.state.startDate.subtract(diff,'months'),this.state.endDate.subtract(diff,'months'));
-        this.setState((currentState)=>{
-            startDate:currentState.startDate.add(diff,'months');
-            endDate:currentState.endDate.add(diff,'months')
-        })
-
+    componentDidUpdate(){
+        console.log(this.state)
     }
     render(){
-        if(this.state.data.length>1 && this.state.data_compare.length>1){
-            
+        if(typeof this.state.data[0] === 'undefined'){
             return(
-                <div>
-                <p>These are the <b>mean</b> of your measurements for your sensor from the last months :</p>
-                From:<DatePicker
-                    selected={this.state.startDate}
-                    selectsStart
-                    startDate={this.state.startDate}
-                    endDate={this.state.endDate}
-                    onChange={this.handleChangeStart}
-                    popperPlacement="bottom-end"
-                    className="cal"
-                    dateFormat="LLL"
-                /> 
-
-                To:<DatePicker
-                    selected={this.state.endDate}
-                    selectsEnd
-                    startDate={this.state.startDate}
-                    endDate={this.state.endDate}
-                    onChange={this.handleChangeEnd}
-                    popperPlacement="bottom-end"
-                    className="cal"
-                    dateFormat="LLL"
-
-                />
-                <button className="cal" onClick={this.getAllStats} >Apply filter</button>
-
-                <div className="row">
-                        {/* <LineChart className="des" data={data} options={options} width="1000" height="350"/> */}
-                        <LineChart width={1000} height={400} data={this.state.data}  margin={{ top: 5, right: 20, bottom: 5, left: 40 }} syncId="newID" >
-                            <Line name={this.state.label} type="linear" dataKey="Value" stroke="#4EAF47" />
-                            <CartesianGrid stroke="#ccc"/>
-                            <XAxis dataKey="Time"/>
-                            <YAxis/>
-                            <Tooltip/>
-                            <Legend verticalAlign="top" height={36}/>
-                    </LineChart>
-                    <br></br>
-                    <ul className="results">
-                            <Maxmium data={this.state.statistic_array}/>
-                            <Minimum data={this.state.statistic_array}/>
-                            <Average data = {this.state.statistic_array}/>
-                            <Shift data = {this.state.statistic_array}
-                                    data_compare={this.state.statistic_array_compare}/>
-                    </ul>
-                    <br></br>
-                    <LineChart width={1000} height={400} data={this.state.data_compare}  margin={{ top: 5, right: 20, bottom: 5, left: 40 }} syncId="newID" >
-                            <Line name={this.state.label_compare} type="linear" dataKey="Value" stroke="#4EAF47" />
-                            <CartesianGrid stroke="#ccc"/>
-                            <XAxis dataKey="Time"/>
-                            <YAxis/>
-                            <Tooltip/>
-                            <Legend verticalAlign="top" height={36}/>
-
-                    </LineChart>
-                    <ul className="results"> 
-                        <Maxmium data={this.state.statistic_array_compare}/>
-                        <Minimum data={this.state.statistic_array_compare}/>
-                        <Average data = {this.state.statistic_array_compare}/>
-
-                    </ul>
-                </div>
-                </div>
+                <Loading/>
             )
         }
         return(
-            <Loading/>
-        )
+            <div className="container">
+                <p>These are the <b>mean</b> of your measurements for your sensor from the last months :</p>
+                <div className="row">
+                <Carousel className="carousel">
+                    <Stats data={this.state.data}/>
+                    <Stats data={this.state.data} />
+                    <Stats data={this.state.data_dwd}/>
+                </Carousel>
+                    <Analysis data={this.state.data}/>
+                </div> 
+            </div>
+            )
     }
 }
 
