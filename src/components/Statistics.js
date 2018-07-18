@@ -139,7 +139,7 @@ class Statistics extends React.Component{
                     if(key!=="sensorId"){
                         var counter = 1;
                         for(var i =0 ;i<counter;i++){
-                            data.push({date:key.substring(5,10),valueBox:json[0][key],valueDWD:0})
+                            data.push({date:key.substring(5,10),valueBox:json[0][key],valueDWD:null})
                         }
                         counter++
                     }})
