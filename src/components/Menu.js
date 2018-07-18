@@ -15,7 +15,8 @@ class Menu extends React.Component{
             dropdownOpen:false,
             activeTab: '1',
             selectedSensorID:'',
-            selectedSensorTitle:''
+            selectedSensorTitle:'',
+
         }
         this.toggle = this.toggle.bind(this);
         this.onChange = this.onChange.bind(this);
@@ -32,15 +33,13 @@ class Menu extends React.Component{
               selectedSensorTitle:this.props.senseBox.sensors[0].title
           })
       }
-        componentDidUpdate(){
-    }
+
     onChange(i, value, tab, ev) {
         this.setState({
             selectedSensorTitle:arguments[1],
              })
       }
-    onActive() {}
-    
+
     render(){
         if(typeof this.props.senseBox._id === 'undefined'){
             return(

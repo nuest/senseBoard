@@ -21,6 +21,7 @@ import Carousel from 'nuka-carousel'
     . wo werden die .zips gespeichert?)
   */
 
+
 class Home extends React.Component{
     constructor(props){
         super(props)
@@ -29,6 +30,7 @@ class Home extends React.Component{
 
     }
     componentDidMount() {
+
     }
 
     render(){

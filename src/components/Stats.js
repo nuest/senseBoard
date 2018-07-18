@@ -17,8 +17,9 @@ class Stats extends React.Component{
         
         return(
             <div>
-                <LineChart width={1000} height={390} data={this.props.data}  margin={{ top: 5, right: 20, bottom: 5, left: 40 }} >
-                    <Line name={this.props.title} type="linear" dataKey="value" stroke="#4EAF47" />
+                <LineChart width={1000} height={390} data={this.props.data}  margin={{ top: 0, right: 5, bottom: 0, left: 0 }} >
+                    <Line name="senseBox" type="linear" dataKey="valueBox" stroke="#4EAF47" />
+                    <Line name="DWD" type="linear" dataKey="valueDWD" stroke="#343a40" />
                     <CartesianGrid stroke="#ccc"/>
                     <XAxis dataKey="date"/>
                     <YAxis/>

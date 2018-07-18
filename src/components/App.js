@@ -10,13 +10,12 @@ import {
 
 } from 'react-router-dom'
 
-
-
 class App extends Component {
   constructor(props){
     super(props)
     this.state={
       input:'',
+
     }
     
   } 
@@ -27,6 +26,8 @@ class App extends Component {
   componentDidUpdate(){
 
   }
+
+  
   onChange(i, value, tab, ev) {
     console.log(arguments);
   }
@@ -36,6 +37,7 @@ class App extends Component {
   }
 
   render() {
+
     return (
         <BrowserRouter>
           <div>
@@ -77,7 +79,7 @@ class App extends Component {
     </BrowserRouter>
 
     )
-  }
+   }
 }
 
 export default App

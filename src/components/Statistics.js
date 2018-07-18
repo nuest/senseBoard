@@ -7,6 +7,7 @@ import Analysis from './Analysis'
 import Loading from './Loading'
 import Carousel from 'nuka-carousel'
 /* Gets called from Menu with props :senseBoxID sensorID + phenomenon und senseBoxLocation*/
+/*  Dataset for each phenomenon */
 class Statistics extends React.Component{
 
     constructor(props){
@@ -15,6 +16,7 @@ class Statistics extends React.Component{
             dwd_stations:[],
             data:[],
             loading:true,
+            title:null,
         }
         this.getStatistics = this.getStatistics.bind(this)
         this.getDWD = this.getDWD.bind(this);
@@ -40,7 +42,17 @@ class Statistics extends React.Component{
       needs states : dwd_stations
       */
      getStations(){
-        fetch('/stations')
+         var title;
+         if(this.props.phenomenon=='Temperatur'){
+             title = 'TU'
+            this.setState({title:'TU'})
+         }
+         if(this.props.phenomenon=='Luftdruck'){
+            title = 'PO'
+            this.setState({title:'PO'})
+        }
+        const url ='/stations/'+title
+        fetch(url)
         .then(res =>res.text())
         .then(text=>JSON.parse(text))
         .then(json => {
@@ -98,18 +110,23 @@ class Statistics extends React.Component{
         }
     /* Funcion that gets the data from a dwd station
     runs getStation() */
-    getDWD(){        const url = '/python/'+ this.getNearest(this.props.senseBoxLocation[1],this.props.senseBoxLocation[0]);
+    getDWD(){        
+        const url = '/python/'+ this.getNearest(this.props.senseBoxLocation[1],this.props.senseBoxLocation[0])+'/'+this.state.title;
+        console.log(url)
         fetch(url)
         .then(res => res.text())
         .then(json => (JSON.parse(json)))
         .then(json =>{
                       const dates = JSON.parse(json[0].replace(/'/g, '"'))
                       const values = JSON.parse(json[1].replace(/'/g, '"'))
-                      var data_dwd = []
+                      var data = this.state.data
                       for(var i =0 ;i<dates.length;i++){
-                          data_dwd.push({date:dates[i],value:values[i]})
+                            console.log(values[i])
+
+                          data[i].valueDWD = values[i]
                       }
-                      this.setState({data_dwd})
+                       this.setState({data:data,loading:false})
+                       console.log(this.state.data)
                     })
       }
 
@@ -118,33 +135,37 @@ class Statistics extends React.Component{
                             +this.props.senseBoxID+'&phenomenon='
                             +this.props.phenomenon+
                             '&from-date=2018-06-16T12:25:22.929Z&to-date=2018-07-16T12:25:22.929Z&operation=arithmeticMean&window=86400000&format=json'
-                            fetch(url)
+                fetch(url)
                 .then((response)=>response.json())
                 .then((json)=>
-                {   var data=[]
+                {   var data = [];
                     Object.keys(json[0]).forEach(key =>{
                     if(key!=="sensorId"){
-                        for(var i =0 ;i<json.length;i++){
-                            data.push({date:key.substring(5,10),value:Math.floor([json[0][key]]*100)/100})
+                        var counter = 1;
+                        for(var i =0 ;i<counter;i++){
+                            data.push({date:key.substring(5,10),valueBox:json[0][key],valueDWD:23})
                         }
+                        counter++
                     }})
                     this.setState({
                         data:data,
-                        loading:false,
                     })
+                    
                 }
-            )                
+            )
+            .then(()=>this.getStations()) 
             } //End get Statistics
 
     componentWillMount(){
-        this.getStations()
+        this.getStatistics()    
     }
     componentDidMount(){
-        this.getStatistics()
 
     }
-    componentDidUpdate(){
-        console.log(this.state)
+    componentDidUpdate(prevState,nextState){
+        // if(prevState.title !== nextState.title){
+        //     this.getStations()
+        // }
     }
     render(){
         if(this.state.loading === true ){
@@ -154,14 +175,16 @@ class Statistics extends React.Component{
         }
         return(
             <div className="container">
+            <div className="row">
                 <p>These are the <b>mean</b> of your measurements for your sensor from the last months :</p>
+            </div>
                 <div className="row">
                 <Carousel className="carousel">
                     <Stats title={this.props.phenomenon} data={this.state.data}/>
                     <Stats  title={this.props.phenomenon} data={this.state.data} />
-                    <Stats title={this.props.phenomenon}  data={this.state.data_dwd}/>
+                    <Stats title={this.props.phenomenon}  data={this.state.data}/>
                 </Carousel>
-                    <Analysis data={this.state.data}/>
+                <Analysis data={this.state.data}/>
                 </div> 
             </div>
             )
