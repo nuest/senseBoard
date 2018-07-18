@@ -153,9 +153,9 @@ class Statistics extends React.Component{
                 <p>These are the <b>mean</b> of your measurements for your sensor from the last months :</p>
                 <div className="row">
                 <Carousel className="carousel">
-                    <Stats data={this.state.data}/>
-                    <Stats data={this.state.data} />
-                    <Stats data={this.state.data_dwd}/>
+                    <Stats title={this.props.phenomenon} data={this.state.data}/>
+                    <Stats  title={this.props.phenomenon} data={this.state.data} />
+                    <Stats title={this.props.phenomenon}  data={this.state.data_dwd}/>
                 </Carousel>
                     <Analysis data={this.state.data}/>
                 </div> 

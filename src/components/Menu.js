@@ -51,7 +51,7 @@ class Menu extends React.Component{
             <BrowserRouter>
                 <div>
                     <Tabs justified onChange={this.onChange} defaultSelectedIndex={false}>
-                            <Tab key = {CurrentMeasurements} value={CurrentMeasurements} label={<Link className='tablinks' to='/data/'> Current Measurements </Link>}/>
+                            <Tab key = {CurrentMeasurements} value={CurrentMeasurements} label={<Link className='tablinks' to='/Overview/'> Current Measurements </Link>}/>
                             {this.props.senseBox.sensors.map((sensors)=>(
                                 <Tab key ={sensors._id} value={sensors.title} label={<Link className='tablinks' to={`/data/${sensors.title}`}>{sensors.title}</Link>} onActive={this.onActive}/> 
                             ))}

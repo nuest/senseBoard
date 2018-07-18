@@ -17,10 +17,10 @@ class Stats extends React.Component{
         
         return(
             <div>
-                <LineChart width={800} height={400} data={this.props.data}  margin={{ top: 5, right: 20, bottom: 5, left: 40 }} syncId="newID" >
-                    <Line name="Smidehes" type="linear" dataKey="value" stroke="#4EAF47" />
+                <LineChart width={1000} height={390} data={this.props.data}  margin={{ top: 5, right: 20, bottom: 5, left: 40 }} >
+                    <Line name={this.props.title} type="linear" dataKey="value" stroke="#4EAF47" />
                     <CartesianGrid stroke="#ccc"/>
-                    <XAxis dataKey="Time"/>
+                    <XAxis dataKey="date"/>
                     <YAxis/>
                     <Tooltip/>
                     <Legend verticalAlign="top" height={36}/>
