@@ -48,8 +48,8 @@ class Statistics extends React.Component{
             this.setState({title:'TU'})
          }
          if(this.props.phenomenon=='Luftdruck'){
-            title = 'PO'
-            this.setState({title:'PO'})
+            title = 'P0'
+            this.setState({title:'P0'})
         }
         const url ='/stations/'+title
         fetch(url)
@@ -59,6 +59,7 @@ class Statistics extends React.Component{
                     const ids = JSON.parse(json[0].replace(/'/g, '"'));
                     const lats = JSON.parse(json[1].replace(/'/g, '"'));
                     const lons = JSON.parse(json[2].replace(/'/g, '"'));
+                    console.log(json)
                     var dwd_stations = []
                     for(var i =0 ;i<ids.length;i++){
                         dwd_stations.push({id:ids[i],location:{lat:lats[i],lon:lons[i]}})
@@ -89,8 +90,6 @@ class Statistics extends React.Component{
     /* Takes location of sensebox and determines the nearest weather station of the dwd 
         needs getStations() to be executed first*/
     getNearest(lat,lon){
-        console.log(lat)
-        console.log(this.state.dwd_stations)
           var nearestid;
           var mindistance=5000000000;
           Object.keys(this.state.dwd_stations).forEach(key=>{
@@ -112,7 +111,6 @@ class Statistics extends React.Component{
     runs getStation() */
     getDWD(){        
         const url = '/python/'+ this.getNearest(this.props.senseBoxLocation[1],this.props.senseBoxLocation[0])+'/'+this.state.title;
-        console.log(url)
         fetch(url)
         .then(res => res.text())
         .then(json => (JSON.parse(json)))
@@ -121,12 +119,10 @@ class Statistics extends React.Component{
                       const values = JSON.parse(json[1].replace(/'/g, '"'))
                       var data = this.state.data
                       for(var i =0 ;i<dates.length;i++){
-                            console.log(values[i])
 
                           data[i].valueDWD = values[i]
                       }
                        this.setState({data:data,loading:false})
-                       console.log(this.state.data)
                     })
       }
 
@@ -143,7 +139,7 @@ class Statistics extends React.Component{
                     if(key!=="sensorId"){
                         var counter = 1;
                         for(var i =0 ;i<counter;i++){
-                            data.push({date:key.substring(5,10),valueBox:json[0][key],valueDWD:23})
+                            data.push({date:key.substring(5,10),valueBox:json[0][key],valueDWD:0})
                         }
                         counter++
                     }})

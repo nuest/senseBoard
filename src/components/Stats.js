@@ -22,7 +22,7 @@ class Stats extends React.Component{
                     <Line name="DWD" type="linear" dataKey="valueDWD" stroke="#343a40" />
                     <CartesianGrid stroke="#ccc"/>
                     <XAxis dataKey="date"/>
-                    <YAxis/>
+                    <YAxis domain={['auto','auto']}/>
                     <Tooltip/>
                     <Legend verticalAlign="top" height={36}/>
                 </LineChart>    
