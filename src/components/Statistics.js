@@ -13,7 +13,8 @@ class Statistics extends React.Component{
         super(props)
         this.state={
             dwd_stations:[],
-            data:[]
+            data:[],
+            loading:true,
         }
         this.getStatistics = this.getStatistics.bind(this)
         this.getDWD = this.getDWD.bind(this);
@@ -127,7 +128,10 @@ class Statistics extends React.Component{
                             data.push({date:key.substring(5,10),value:Math.floor([json[0][key]]*100)/100})
                         }
                     }})
-                    this.setState({data})
+                    this.setState({
+                        data:data,
+                        loading:false,
+                    })
                 }
             )                
             } //End get Statistics
@@ -143,7 +147,7 @@ class Statistics extends React.Component{
         console.log(this.state)
     }
     render(){
-        if(typeof this.state.data[0] === 'undefined'){
+        if(this.state.loading === true ){
             return(
                 <Loading/>
             )

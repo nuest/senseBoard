@@ -26,12 +26,15 @@ class Analysis extends React.Component{
     }
     render(){
         return(
+        <div className="analyse">
         <ul>
             <Average data={this.state.data}/>
             <Maximum data={this.state.data}/>
             <Minimum data={this.state.data}/>
-            {/* <Shift data={this.props.data}/> */}
+            {/* <Shift data={this.props.data} data_compare={this.props.data}/> */}
         </ul>
+        <button id="story">Create Story</button>
+        </div>  
         )
     }
 }
