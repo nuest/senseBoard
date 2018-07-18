@@ -5,14 +5,19 @@ import zipfile
 from ftplib import FTP
 import csv
 
+
 def __main__():
     stationID = sys.argv[1]
     phenomenon = sys.argv[2] ## TU = air_temperature temperatur PO = Pressure
     title = ''
     if(phenomenon=='TU'):
         title = '/air_temperature'
-    if(phenomenon=='PO'):
+    if(phenomenon=='P0'):
         title = '/pressure'
+
+    path = "/home/eric/Documents/Bachelorarbeit/senseboard_backend/senseBoard/data/"+stationID+"_"+phenomenon
+    if not os.path.exists(path):
+        os.mkdir(path)
     #### Logging in to the ftp - server ######
     filename = 'stundenwerte_'+phenomenon+'_'+stationID+'_akt.zip'
     ftp = FTP('ftp-cdc.dwd.de')  
@@ -25,9 +30,8 @@ def __main__():
     filedata.close()  
     ftp.quit()  
     #### For every station a folder gets created 
-    path = 'ressources/'+stationID+'/'+phenomenon
-    if not os.path.exists(path):
-        os.mkdir(path, 0770)
+    
+
     #### Unzip the just downloaded file to ressources/
     zip_ref = zipfile.ZipFile(filename, 'r')
     zip_ref.extractall(path)

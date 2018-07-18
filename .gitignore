@@ -8,3 +8,5 @@ ressources/Metadaten_Geraete_Rel_Feuchte_00150.txt
 ressources/Metadaten_Parameter_tu_stunde_00150.html
 ressources/Metadaten_Parameter_tu_stunde_00150.txt
 npm-debug.log
+data/
+*.txt
