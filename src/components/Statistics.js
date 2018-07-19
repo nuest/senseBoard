@@ -53,7 +53,7 @@ class Statistics extends React.Component{
                 <p>These are the <b>mean</b> of your measurements for your sensor from the last months :</p>
             </div>
                 <div className="row">
-                    <Stats url={this.state.url}/>
+                    <Stats phenomenon={this.props.phenomenon} url={this.state.url}/>
                 {/* <Analysis data={this.state.data}/> */}
                 </div> 
             </div>

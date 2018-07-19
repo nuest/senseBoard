@@ -19,7 +19,11 @@ class Stats extends React.Component{
     }
 
     fetchStats(){
-        const url ='python/'+this.props.url
+        var url=''
+        if(this.props.phenomenon=="PM10"){
+            url='python/pm10/'+this.props.url
+        }
+        else{url = 'python/'+this.props.url} 
         fetch(url)
         .then((response)=>response.json())
         .then((json)=>{
