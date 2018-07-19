@@ -14,7 +14,7 @@ import csv
 import json
 from io import BytesIO
 import datetime
-from math import sin, cos, sqrt, atan2, radians
+from math import sin, floor,cos, sqrt, atan2, radians
 
     # fig = plt.figure()
     # plt.plot(values)
@@ -123,10 +123,12 @@ def __senseBox__():
         res = json.loads(response.content)
         boxData=res[0]
         data=[]
+        dates=[]
         for item in boxData.items():
             if not item[0]=='sensorId':
                 data.append(item[1])
-        return data
+                dates.append(item[0])
+        return data,dates
 
 
 #####################################################
@@ -183,19 +185,28 @@ def __DWD__():
 
 def __main__():
     bytes = BytesIO()
-    senseBoxData = __senseBox__()
+    senseBoxData = __senseBox__()[0]
+    dates = __senseBox__()[1]
+    ticks = range(0,len(dates),floor(len(senseBoxData)/10))
+    labels=[]
+    for tick in ticks:
+        labels.append(dates[tick][5:10])
     fig = plt.figure()
     if sys.argv[2] == 'Temperatur' or sys.argv[2] == 'Luftdruck':   
         dwdData = __DWD__()
-        ax = plt.plot(senseBoxData,label="senseBox")
+        ax = plt.plot(dates,senseBoxData,label="senseBox")
         bx = plt.plot(dwdData,label="DWD")
         plt.grid()
         plt.legend()
+        plt.xlabel('Datum')
+        plt.xticks(ticks,labels)
         plt.savefig(bytes,format='jpg')
     else:
         plt.plot(senseBoxData)
         plt.title(sys.argv[2])
         plt.grid()
+        plt.xlabel('Datum')
+        plt.xticks(ticks,labels)
         plt.savefig(bytes,format='jpg')
     bytes.seek(0)
     encodedimg = base64.b64encode(bytes.read())
