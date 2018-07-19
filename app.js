@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/python', pythonRouter);
+app.use('/data/python', pythonRouter);
 app.use('/stations', stationRouter);
 
 // catch 404 and forward to error handler

@@ -9,20 +9,21 @@ def __main__():
     ids = []
     lats = []
     lons = []
-    des = "reader"
-    for row in reader:
-        id = row[0]
-        lat = row[3]
-        lon = row[4]
-        
-        if row[2] == '20180713' or row[2]=="20180716":
-            ids.append(id)
-            lats.append(lat)
-            lons.append(lon)
+    with open(filename, newline='') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',', quotechar='|')
+        for row in reader:
+            id = row[0]
+            lat = row[3]
+            lon = row[4]
+            
+            if row[2] == '20180713' or row[2]=="20180716":
+                ids.append(id)
+                lats.append(lat)
+                lons.append(lon)
 
-    print ids
-    print lats
-    print lons 
+    print (ids)
+    print (lats)
+    print (lons )
 
     return
 if len(sys.argv)>1:

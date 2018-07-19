@@ -4,12 +4,21 @@ var myPythonScriptPath = 'getStations.py';
 
 // Use python shell
 var PythonShell = require('python-shell');
-var pyshell = new PythonShell(myPythonScriptPath);
+// var pyshell = new PythonShell(myPythonScriptPath);
+// var options = {
+//     mode: 'text',
+//     pythonPath: '/usr/bin/python3',
+//     pythonOptions: ['-u'], // get print results in real-time
+//     scriptPath: 'getStations.py',
+//     args: [req.params.title]
+//   };
 /* GET users listing. */
 router.get('/:title', function(req, res, next) {
     // Comment out this line:
     PythonShell.run(myPythonScriptPath, options= {
         mode: 'text',
+        pythonPath: "python3",
+        pythonOptions: ['-u'], // get print results in real-time
         args: [req.params.title]
     },
     function (err, results) {
