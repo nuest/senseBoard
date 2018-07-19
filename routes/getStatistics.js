@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var myPythonScriptPath = 'getDWD.py';
+var myPythonScriptPath = 'getStatistics.py';
 
 // Use python shell
 var PythonShell = require('python-shell');

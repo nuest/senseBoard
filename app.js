@@ -5,8 +5,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 
-var pythonRouter = require('./routes/getDWD');
-var stationRouter = require('./routes/getStations');
+var statisticsRouter = require('./routes/getStatistics');
+var pm10Router = require('./routes/getPM10');
 
 var app = express();
 
@@ -20,8 +20,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/data/python', pythonRouter);
-app.use('/data/python/pm10', stationRouter);
+app.use('/data/python', statisticsRouter);
+app.use('/data/python/pm10', pm10Router);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
