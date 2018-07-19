@@ -7,25 +7,38 @@ class Stats extends React.Component{
     constructor(props){
         super(props)
         this.state = {
+            loading:true,
+            b64image:null
         }
+        this.fetchStats = this.fetchStats.bind(this);
     }
 
     componentDidMount(){
+        this.fetchStats()
+        console.log(this.props)
+    }
+
+    fetchStats(){
+        const url ='python/'+this.props.url
+        fetch(url)
+        .then((response)=>response.json())
+        .then((json)=>{
+            this.setState({
+                b64image:"data:image/jpeg;base64," + json[0].substring(2,json[0].length-1)
+            })
+        })
+        .then(()=>this.setState({loading:false}))
     }
 
     render(){
-        
+        if(this.state.loading){
+            return(
+                <Loading/>
+            )
+        }
         return(
             <div>
-                <LineChart width={1000} height={390} data={this.props.data}  margin={{ top: 0, right: 5, bottom: 0, left: 0 }} >
-                    <Line name="senseBox" type="linear" dataKey="valueBox" stroke="#4EAF47" />
-                    <Line name="DWD" type="linear" dataKey="valueDWD" stroke="#343a40" />
-                    <CartesianGrid stroke="#ccc"/>
-                    <XAxis dataKey="date"/>
-                    <YAxis domain={['auto','auto']}/>
-                    <Tooltip/>
-                    <Legend verticalAlign="top" height={36}/>
-                </LineChart>    
+                <img src={this.state.b64image}/>
             </div>
 
         )
