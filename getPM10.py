@@ -29,26 +29,26 @@ def subtractMonth(today):
             month = str(month)
         return  str(current_year) +'-'+month+'-'+rest 
 def __luft__():
-    day = 86400
+    day= 86400 
+    daysback = 30
     counter = 0 
-    starting = 1531864800
+    starting = 1531864800  - day*daysback
     ending = 1531951200
     data = []
     dates = []
-    while(counter<31):
-        ranging=str(starting)+','+str(ending)
-        url ="https://www.umweltbundesamt.de/uaq/csv/stations/data?station[]=DENW095&pollutant[]=PM10&scope[]=1TMW&group[]=pollutant&range[]="+ranging
-        response= requests.get(url)
-        f = str(response.content)
-        reader = csv.reader([f[1:]],delimiter=';')
-        for row in reader:
-            value = int(row[12][0:2])
-            date = row[11]
-            dates.append(date)
-            data.append(value)
-        starting = starting - day
-        ending = ending - day
-        counter = counter+1
+    ranging=str(starting)+','+str(ending)
+    url ="https://www.umweltbundesamt.de/uaq/csv/stations/data?station[]=DENW095&pollutant[]=PM10&scope[]=1TMW&group[]=pollutant&range[]="+ranging
+    response= requests.get(url)
+    f = str(response.content)
+    reader = csv.reader([f[2:]],delimiter=';')
+    for row in reader:
+        for item in row:
+            if(item[0].isdigit()):
+                if (item[3]=='n'):
+                    value= float(item[0:2])
+                    data.append(value)
+                else:
+                    dates.append(item)
     return data,dates
 def __senseBox__():
         boxId = sys.argv[1]
@@ -81,8 +81,8 @@ def __main__():
     for tick in ticks:
         labels.append(luftDates[tick][0:5])
     fig = plt.figure()
-    ax = plt.plot(luftDates,luftValues,label="Daten Umweltbundesamt")
     bx = plt.plot(senseBoxData_Data,label="Daten senseBox ")
+    ax = plt.plot(luftDates,luftValues,label="Daten Umweltbundesamt")
     plt.grid()
     plt.legend()
     plt.xlabel('Datum')
