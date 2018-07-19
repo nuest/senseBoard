@@ -149,7 +149,13 @@ class Statistics extends React.Component{
                     
                 }
             )
-            .then(()=>this.getStations()) 
+            .then(()=>{
+                if(this.props.phenomenon=='Temperatur' || this.props.phenomenon == 'Luftdruck'){
+                this.getStations()} 
+                else {this.setState({loading:false})}
+            }
+        )
+            
             } //End get Statistics
 
     componentWillMount(){
