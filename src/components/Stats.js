@@ -1,5 +1,4 @@
 import React from 'react'
-import { LineChart, Line,CartesianGrid,XAxis,YAxis,Tooltip,Legend } from 'recharts';
 import Loading from './Loading';
 
 /* gets called from statistics with props : data */
@@ -38,7 +37,7 @@ class Stats extends React.Component{
     fetchStats(){
         this.setState({loading:true})
         var url=this.state.senseBoxID+'/'+this.state.phenomenon+'/'+this.props.senseBoxData.currentLocation.coordinates[1]+'/'+this.props.senseBoxData.currentLocation.coordinates[1]+'/'+this.state.from+'/'+this.state.to+'/'+this.state.window
-        if(this.state.phenomenon=="PM10"){
+        if(this.state.phenomenon==="PM10"){
             url='python/pm10/'+url
         }
         else{url = 'python/'+url} 
@@ -82,8 +81,6 @@ class Stats extends React.Component{
             window:value,
      }))
     }
-    //                            onChange={this.updateInput}
-
     render(){
         if(this.state.loading){
             return(
@@ -93,7 +90,7 @@ class Stats extends React.Component{
         return(
             <div className="row">
                 <div className="col-md-6">
-                    <img src={this.state.b64image}/>
+                    <img alt="Statistic" src={this.state.b64image}/>
                 </div>
                 <div className="col-md-6">
                     <div className="dropdown">
