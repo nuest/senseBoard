@@ -20,8 +20,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/data/python', statisticsRouter);
-app.use('/data/python/pm10', pm10Router);
+app.use('/python', statisticsRouter);
+app.use('/python/pm10', pm10Router);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

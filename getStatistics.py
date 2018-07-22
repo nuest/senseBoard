@@ -15,6 +15,7 @@ import json
 from io import BytesIO
 import datetime
 from math import sin, floor,cos, sqrt, atan2, radians
+import glob
 
     # fig = plt.figure()
     # plt.plot(values)
@@ -112,13 +113,16 @@ def converTime(date):
     month = date[5:7]
     day = date[8:10]
     clock = date[11:13]
-    result = year + month + day +clock
+    result = year + month + day +"00"
     return int(result)
 #######################
 def __senseBox__():
         boxId = sys.argv[1]
         phenomenon = sys.argv[2]
-        url = "https://api.opensensemap.org/statistics/descriptive?senseboxid="+boxId+"&phenomenon="+phenomenon+"&from-date="+subtractMonth(today)+"Z&to-date="+str(today)+"Z&operation=arithmeticMean&window=3600000&format=json"
+        start = sys.argv[5] + 'T00:00:00.000Z'
+        end = sys.argv[6] + 'T00:00:00.000Z'
+        window = sys.argv[7] 
+        url = "https://api.opensensemap.org/statistics/descriptive?senseboxid="+boxId+"&phenomenon="+phenomenon+"&from-date="+start+"&to-date="+end+"&operation=arithmeticMean&window="+window+"&format=json"
         response = requests.get(url)
         res = json.loads(response.content)
         boxData=res[0]
@@ -155,18 +159,22 @@ def __DWD__():
     folder = 'pub/CDC/observations_germany/climate/hourly'+title+'/recent/'
     ftp.cwd(folder)  
     filedata = open(filename, 'wb')  
+
     ftp.retrbinary('RETR '+filename, filedata.write)  
     filedata.close()  
     ftp.quit()  
         #### Unzip the just downloaded file to ressources/
     zip_ref = zipfile.ZipFile(filename, 'r')
     zip_ref.extractall(path)
+    os.remove('/home/eric/Documents/Bachelorarbeit/senseboard_backend/senseBoard/'+filename)
     zip_ref.close()
     ####  fetch the correct file 
     onlyfiles = [f for f in os.listdir(path) if isfile(join(path, f))]
-    for filename in onlyfiles:
-        if filename.startswith('produkt'):
-            file = filename
+    for filenames in onlyfiles:
+        if filenames.startswith('produkt'):
+            file = filenames
+        else:
+            os.remove(path+'/'+filenames)
     ##### Read csv and extract data for further plotting
     dates = []
     values = []
@@ -176,11 +184,14 @@ def __DWD__():
             value = row[3]
             date = row[1]
             if not date == 'MESS_DATUM':
-                if float(date)>converTime(subtractMonth(today)) and float(date)<converTime(today):  
+                if float(date)>=converTime(sys.argv[5]) and float(date)<=converTime(sys.argv[6]):  
                     dates.append(date[6:8])          
                     if not value == 'TT_TU':
                         value_new = float(value.strip())
                         values.append(value_new)
+    # delete files that were downloaded 
+    os.remove(path+'/'+file)
+    os.rmdir(path)
     return values 
 
 def __main__():
@@ -199,13 +210,14 @@ def __main__():
         plt.grid()
         plt.legend()
         plt.xlabel('Datum')
+        plt.ylabel(sys.argv[2])
         plt.xticks(ticks,labels)
         plt.savefig(bytes,format='jpg')
     else:
         plt.plot(senseBoxData)
-        plt.title(sys.argv[2])
         plt.grid()
         plt.xlabel('Datum')
+        plt.ylabel(sys.argv[2])
         plt.xticks(ticks,labels)
         plt.savefig(bytes,format='jpg')
     bytes.seek(0)
