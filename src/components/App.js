@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import Home from './Home'
 import About from './About'
 import FetchBox from './fetchBox'
-import Data from './Data'
 import {
   BrowserRouter,
   Route,
@@ -72,7 +71,6 @@ class App extends Component {
             </div>
             </nav>
             <Route exact path='/' component={Home}/>
-            <Route path='/data' component={Data}/>
             <Route path='/fetchBox' component={FetchBox}/>
             <Route path='/about' component={About}/>
         </div>

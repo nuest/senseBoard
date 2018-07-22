@@ -1,26 +1,21 @@
 import React from 'react'
-import DatePicker from 'react-datepicker';
-import moment from 'moment';
-import 'react-datepicker/dist/react-datepicker.css';
 import Stats from './Stats'
-import Analysis from './Analysis'
 import Loading from './Loading'
-import Carousel from 'nuka-carousel'
-/* Gets called from Menu with props :senseBoxID sensorID + phenomenon und senseBoxLocation*/
-/*  Dataset for each phenomenon */
 class Statistics extends React.Component{
 
     constructor(props){
         super(props)
+        console.log(props)
         this.state={
-            loading:false,
+            loading:true,
             title:null,
-            url:this.props.senseBoxID+'/'+this.props.phenomenon+'/'+this.props.senseBoxLocation[0]+'/'+this.props.senseBoxLocation[1]
+            url:null,
+            senseBoxData:null
         }
 
         this.handleChangeStart = this.handleChangeStart.bind(this);
         this.handleChangeEnd = this.handleChangeEnd.bind(this);
-
+        this.fetchBox = this.fetchBox.bind(this)
     }//End constructor
 
     handleChangeStart(date) {
@@ -34,13 +29,49 @@ class Statistics extends React.Component{
         });
     }
 
+    fetchBox(){       
+        const id = '570bad2b45fd40c8197f13a2'  
+        this.setState({
+            loading:true,
+            modalIsOpen:false
+          })
 
-    componentWillMount(){
-    }/* Gets called from Menu with props :senseBoxID sensorID + phenomenon und senseBoxLocation*/
+        const boxURL =`https://api.opensensemap.org/boxes/`+id //'+this.props.id'
+        fetch(boxURL)
+        .catch((error) => {
+            this.setState({
+                succesful:false,
+            })
+          console.warn(error)
+          return null
+        })
+        .then((response) => response.json())
+        .then((json)=>this.setState({
+            senseBoxData:json,
+            loading:false,
+            }))
+       // .then(this.reverseGeocoding)
+    }//End fetchbox()
+
+    // reverseGeocoding(){
+    //     const lon = this.state.metadata.currentLocation.coordinates[0]
+    //     const lat = this.state.metadata.currentLocation.coordinates[1]
+    //     const URL = 'https://nominatim.openstreetmap.org/reverse?format=json&lat='+lat+'&lon='+lon+'&zoom=18&addressdetails=1'
+    //     fetch(URL)
+    //     .catch((error)=>{
+    //         console.warn(error);
+    //         return null
+    //     })
+    //     .then((response)=>response.json())
+    //     .then((json)=>this.setState({
+    //         geocodingResult:json,
+    //     }))
+    //     }// End reverseGeocoding
+
     componentDidMount(){
-
+        this.fetchBox()
+        
     }
-
     render(){
         if(this.state.loading === true ){
             return(
@@ -48,13 +79,14 @@ class Statistics extends React.Component{
             )
         }
         return(
-            <div className="container">
+            <div>
             <div className="row">
                 <p>These are the <b>mean</b> of your measurements for your sensor from the last months :</p>
             </div>
+            <div className="row">
+            </div>
                 <div className="row">
-                    <Stats phenomenon={this.props.phenomenon} url={this.state.url}/>
-                {/* <Analysis data={this.state.data}/> */}
+                    <Stats senseBoxData={this.state.senseBoxData}/>
                 </div> 
             </div>
             )

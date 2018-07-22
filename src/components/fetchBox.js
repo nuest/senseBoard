@@ -1,8 +1,7 @@
 import React from 'react'
 import {Link,Route,  BrowserRouter,} from 'react-router-dom'
 import Modal from 'react-modal'
-import Data from './Data'
-import Menu from './Menu'
+import Statistics from './Statistics';
 /* Styles for the modal*/
 const customStyles = {
     content : {
@@ -34,11 +33,9 @@ class FetchBox extends React.Component{
             first:'',
           }
         this.updateInput = this.updateInput.bind(this);
-        this.fetchBox = this.fetchBox.bind(this);
         this.openModal = this.openModal.bind(this);
         this.afterOpenModal = this.afterOpenModal.bind(this);
         this.closeModal = this.closeModal.bind(this);
-        this.reverseGeocoding=this.reverseGeocoding.bind(this)
     }//End constructor
     openModal() {
         this.setState({modalIsOpen: true});
@@ -59,44 +56,6 @@ class FetchBox extends React.Component{
             input:value,
      }))
     }
-    fetchBox(){      
-        const id = '570bad2b45fd40c8197f13a2'  
-        this.setState({
-            loading:true,
-            modalIsOpen:false
-          })
-
-        const boxURL =`https://api.opensensemap.org/boxes/`+id //'+this.state.input'
-        fetch(boxURL)
-        .catch((error) => {
-            this.setState({
-                succesful:false,
-            })
-          console.warn(error)
-          return null
-        })
-        .then((response) => response.json())
-        .then((json)=>this.setState({
-            senseBoxData:json,
-            loading:false,
-            }))
-        .then(this.reverseGeocoding)
-    }//End fetchbox()
-
-    reverseGeocoding(){
-        const lon = this.state.metadata.currentLocation.coordinates[0]
-        const lat = this.state.metadata.currentLocation.coordinates[1]
-        const URL = 'https://nominatim.openstreetmap.org/reverse?format=json&lat='+lat+'&lon='+lon+'&zoom=18&addressdetails=1'
-        fetch(URL)
-        .catch((error)=>{
-            console.warn(error);
-            return null
-        })
-        .then((response)=>response.json())
-        .then((json)=>this.setState({
-            geocodingResult:json,
-        }))
-        }// End reverseGeocoding
     componentDidMount(){
         this.setState({modalIsOpen: true});
     }
@@ -131,7 +90,7 @@ class FetchBox extends React.Component{
                         <Link 
                         to={'/Overview'}>
                             <button 
-                                onClick={this.fetchBox} 
+                                onClick={()=>this.closeModal()} 
                                 className="btn header-btn"
                                 type="button">
                                 Search
@@ -140,8 +99,7 @@ class FetchBox extends React.Component{
                     </form>
                 </Modal>
                 <Route path='/Overview' 
-                component={() => (<Menu senseBox={this.state.senseBoxData} 
-                                    geocodingResult={this.state.geocodingResult}
+                component={() => (<Statistics id={this.state.input}
                     />)}
                 />
             </div>
