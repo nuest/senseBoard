@@ -4,19 +4,19 @@ import Loading from './Loading';
 /* gets called from statistics with props : data */
 class Stats extends React.Component{
     constructor(props){
-        var date = new Date()
-        date = date.toISOString().substring(0,10)
-        var date2 = new Date()
-        date2.setMonth(date2.getMonth()-1)
-        date2 = date2.toISOString().substring(0,10)
+        var to = new Date()
+        to = to.toISOString().substring(0,10)
+        var from = new Date()
+        from.setMonth(from.getMonth()-1)
+        from = from.toISOString().substring(0,10)
         super(props)
         this.state = {
             loading:false,
             b64image:null,
             senseBoxID:this.props.senseBoxData._id,
             phenomenon:this.props.senseBoxData.sensors[0].title,
-            from:date2,
-            to:date,
+            from:from,
+            to:to,
             window:3600000,
         }
         this.fetchStats = this.fetchStats.bind(this);
@@ -104,8 +104,8 @@ class Stats extends React.Component{
                         </ul>
                     </div>
                     <input type="text" name="senseBoxID" onChange={this.updateInputId} value={this.state.senseBoxID} placeholder="senseBoxID"/>
-                    <input type="date" value={this.state.from} name="from" onChange={this.updateInputFrom} placeholder="Start"/>
-                    <input type="date" value={this.state.to} name="to" onChange={this.updateInputTo} placeholder="To"/>
+                    <input type="date" max = {this.state.to} value={this.state.from} name="from" onChange={this.updateInputFrom} placeholder="Start"/>
+                    <input type="date" min = {this.state.from} value={this.state.to} name="to" onChange={this.updateInputTo} placeholder="To"/>
                     <input type="number" name="window" onChange={this.updateInputWindow} value={this.state.window} min="3600000" max="86400000" placeholder="window"/>
                     <input type="text" name="dwdid" placeholder="DWD Station"/>
                     <button type="submit" onClick={this.fetchStats} value="Apply">Apply</button>

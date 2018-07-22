@@ -79,10 +79,7 @@ class Statistics extends React.Component{
             )
         }
         return(
-            <div>
-            <div className="row">
-                <p>These are the <b>mean</b> of your measurements for your sensor from the last months :</p>
-            </div>
+            <div className="container">
             <div className="row">
             </div>
                 <div className="row">
