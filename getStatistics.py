@@ -223,7 +223,6 @@ def __main__():
     bytes.seek(0)
     encodedimg = base64.b64encode(bytes.read())
     print(encodedimg)
-    
     return
 if len(sys.argv)>1:
     __main__()
