@@ -24,11 +24,12 @@ class Loading extends Component {
       window.clearInterval(this.interval);
     }
     render() {
-      return (
-        <p>
-          {this.state.text}
-        </p>
-      )
+      return(
+        <div id="loaderdiv">
+            <div className="loader"></div>  
+            <p id="loading">{this.state.text}</p>
+      </div>
+     )
     }
   }
 

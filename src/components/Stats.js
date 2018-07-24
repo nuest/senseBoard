@@ -1,7 +1,12 @@
 import React from 'react'
 import Loading from './Loading';
+import SvgIcon from 'react-icons-kit';
+import {ic_date_range} from 'react-icons-kit/md/ic_date_range'
+import {ic_router} from 'react-icons-kit/md/ic_router'
+import {ic_refresh} from 'react-icons-kit/md/ic_refresh'
+import {ic_cloud_queue} from 'react-icons-kit/md/ic_cloud_queue'/* gets called from statistics with props : data */
+import {ic_brush} from 'react-icons-kit/md/ic_brush'
 
-/* gets called from statistics with props : data */
 class Stats extends React.Component{
     constructor(props){
         var to = new Date()
@@ -30,8 +35,7 @@ class Stats extends React.Component{
     }
 
     componentDidMount(){
-        //this.fetchStats()
-        console.log(this.props)
+        this.fetchStats()
     }
 
     fetchStats(){
@@ -51,8 +55,8 @@ class Stats extends React.Component{
         })
         .then(()=>this.setState({loading:false}))
     }
-    updateInputPhenom(title){
-        const value = title
+    updateInputPhenom(e){
+        const value = e.target.value
         this.setState(({
             phenomenon:value,
      }))
@@ -88,29 +92,53 @@ class Stats extends React.Component{
             )
         }
         return(
-            <div className="row">
-                <div className="col-md-6">
-                    <img alt="Statistic" src={this.state.b64image}/>
-                </div>
-                <div className="col-md-6">
-                    <div className="dropdown">
-                        <button className="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">{this.state.phenomenon}
-                            <span className="caret"></span>
-                        </button>
-                        <ul className="dropdown-menu">
-                            {this.props.senseBoxData.sensors.map((sensors)=>(
-                                <li onClick={()=>this.updateInputPhenom(sensors.title)} key = {sensors._id}>{sensors.title}</li>
+        <div className="stats">           
+        <div className="row">
+        <div className="form-group col-md-6">
+            <div className="input-group col-md-6">
+            <span className="input-addon"> <SvgIcon size={20} icon={ic_cloud_queue}/></span>
+                <select onChange={this.handleChange} className="form-control" id="sel1">
+                {this.props.senseBoxData.sensors.map((sensors)=>(
+                                <option key={sensors._id}>{sensors.title}</option>
                             ))}
-                        </ul>
-                    </div>
-                    <input type="text" name="senseBoxID" onChange={this.updateInputId} value={this.state.senseBoxID} placeholder="senseBoxID"/>
-                    <input type="date" max = {this.state.to} value={this.state.from} name="from" onChange={this.updateInputFrom} placeholder="Start"/>
-                    <input type="date" min = {this.state.from} value={this.state.to} name="to" onChange={this.updateInputTo} placeholder="To"/>
-                    <input type="number" name="window" onChange={this.updateInputWindow} value={this.state.window} min="3600000" max="86400000" placeholder="window"/>
-                    <input type="text" name="dwdid" placeholder="DWD Station"/>
-                    <button type="submit" onClick={this.fetchStats} value="Apply">Apply</button>
-                </div>
+                </select>
             </div>
+            <div className="input-group col-md-6">
+               <span className="input-addon"> <SvgIcon size={20} icon={ic_router}/></span>
+                 <input type="text" className="form-control" name="senseBoxID" onChange={this.updateInputId} value={this.state.senseBoxID} placeholder="senseBoxID"/><br></br>
+            </div>
+            <div className="input-group col-md-6">
+               <span className="input-addon"> <SvgIcon size={20} icon={ic_date_range}/></span>
+                <input className="form-control" type="date" max = {this.state.to} value={this.state.from} name="from" onChange={this.updateInputFrom} placeholder="Start"/>
+                <input className="form-control" type="date" min = {this.state.from} value={this.state.to} name="to" onChange={this.updateInputTo} placeholder="To"/>
+            </div>
+
+            <div className="input-group col-md-6 ">
+               <span className="input-addon"> <SvgIcon size={20} icon={ic_refresh}/></span>
+               <input className="form-control" type="number" name="window" onChange={this.updateInputWindow} value={this.state.window} min="3600000" max="86400000" placeholder="window"/><br></br>
+            </div>
+            <div className="input-group col-md-6">
+                <button className="btn btn-block" type="submit" onClick={this.fetchStats} value="Apply">Apply Filter</button>
+            </div>
+            </div>
+                <div className="col-md-6">
+                <ul className="list-group">
+                    <li className="list-group-item">senseBox steht an : Gasselstiege Münster</li>
+                    <li className="list-group-item">nächste gelegene DWD Station ist 20km entfernt</li>
+                    <li className="list-group-item">Das Monatsmaximum von 34 wurde am 13.12.2018 erreicht</li>
+                    <li className="list-group-item">Das Monatsminimum von 20 wurde am 13.12.2018 erreicht</li>
+                    <li className="list-group-item">Durchschnittlich ist es 5°C wärmer geworden</li>
+                    </ul>     
+                    <button className="btn btn-block" value="story"> <SvgIcon size={20} icon={ic_brush}/>Open Story Editor</button>
+                </div>
+        <div className="row">
+        <div className="col-md-6">
+                    <img className="img" alt="Statistic" src={this.state.b64image}/>
+                </div>
+        </div>
+        </div>
+        </div>
+
 
         )
     }

@@ -79,13 +79,8 @@ class Statistics extends React.Component{
             )
         }
         return(
-            <div className="container">
-            <div className="row">
-            </div>
-                <div className="row">
-                    <Stats senseBoxData={this.state.senseBoxData}/>
-                </div> 
-            </div>
+            
+                <Stats senseBoxData={this.state.senseBoxData}/>
             )
     }
 }
