@@ -95,7 +95,7 @@ class Stats extends React.Component{
         <div className="stats">           
         <div className="row">
         <div className="form-group col-md-6">
-            <div className="input-group col-md-6">
+            <div className="input-group col-md-10">
             <span className="input-addon"> <SvgIcon size={20} icon={ic_cloud_queue}/></span>
                 <select onChange={this.handleChange} className="form-control" id="sel1">
                 {this.props.senseBoxData.sensors.map((sensors)=>(
@@ -103,26 +103,26 @@ class Stats extends React.Component{
                             ))}
                 </select>
             </div>
-            <div className="input-group col-md-6">
+            <div className="input-group col-md-10">
                <span className="input-addon"> <SvgIcon size={20} icon={ic_router}/></span>
                  <input type="text" className="form-control" name="senseBoxID" onChange={this.updateInputId} value={this.state.senseBoxID} placeholder="senseBoxID"/><br></br>
             </div>
-            <div className="input-group col-md-6">
+            <div className="input-group col-md-10">
                <span className="input-addon"> <SvgIcon size={20} icon={ic_date_range}/></span>
                 <input className="form-control" type="date" max = {this.state.to} value={this.state.from} name="from" onChange={this.updateInputFrom} placeholder="Start"/>
                 <input className="form-control" type="date" min = {this.state.from} value={this.state.to} name="to" onChange={this.updateInputTo} placeholder="To"/>
             </div>
 
-            <div className="input-group col-md-6 ">
+            <div className="input-group col-md-10">
                <span className="input-addon"> <SvgIcon size={20} icon={ic_refresh}/></span>
                <input className="form-control" type="number" name="window" onChange={this.updateInputWindow} value={this.state.window} min="3600000" max="86400000" placeholder="window"/><br></br>
             </div>
-            <div className="input-group col-md-6">
+            <div className="input-group col-md-10">
                 <button className="btn btn-block" type="submit" onClick={this.fetchStats} value="Apply">Apply Filter</button>
             </div>
             </div>
                 <div className="col-md-6">
-                <ul className="list-group">
+                <ul className="list-group analysis">
                     <li className="list-group-item">senseBox steht an : Gasselstiege Münster</li>
                     <li className="list-group-item">nächste gelegene DWD Station ist 20km entfernt</li>
                     <li className="list-group-item">Das Monatsmaximum von 34 wurde am 13.12.2018 erreicht</li>
@@ -131,11 +131,12 @@ class Stats extends React.Component{
                     </ul>     
                     <button className="btn btn-block" value="story"> <SvgIcon size={20} icon={ic_brush}/>Open Story Editor</button>
                 </div>
+                </div>
+
         <div className="row">
-        <div className="col-md-6">
+        <div className="col-md-12">
                     <img className="img" alt="Statistic" src={this.state.b64image}/>
                 </div>
-        </div>
         </div>
         </div>
 

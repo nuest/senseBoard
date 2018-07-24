@@ -5,7 +5,7 @@ import FetchBox from './fetchBox'
 import {
   BrowserRouter,
   Route,
-  Link,
+  
 
 } from 'react-router-dom'
 import { Nav, NavIcon, NavText,withRR4 } from 'react-sidenav';
@@ -72,21 +72,15 @@ class App extends Component {
         </div>
     <section id="footer">
 		<div className="container fott">
-				<div className="col-xs-12 col-sm-12 col-md-12 mt-2 mt-sm-5">
 					<ul className="list-unstyled list-inline social text-center">
 						<li className="list-inline-item"><a href="https://twitter.com/sensebox_de"><i className="fa fa-twitter"></i></a></li>
 						<li className="list-inline-item"><a href="https://www.facebook.com/sensebox.de"><i className="fa fa-facebook"></i></a></li>
 					</ul>
-			</div>	
-			<div className="row">
 				<div className="col-xs-12 col-sm-12 col-md-12 mt-2 mt-sm-2 text-center text-white">
 					<p><u><a href="https://www.sensebox.de/">senseBox</a></u> is a GI@School project at the WWU Münster<br></br>
 					This app was built by Eric Thieme-Garmann</p>
 				</div>
-        <hr>
-				</hr>
-			</div>	
-		</div>
+  		</div>
 	</section>
         </div>
     </BrowserRouter>

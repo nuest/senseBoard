@@ -1,9 +1,6 @@
 import React from 'react';
 import SvgIcon from 'react-icons-kit';
-import {ic_date_range} from 'react-icons-kit/md/ic_date_range'
-import {ic_router} from 'react-icons-kit/md/ic_router'
-import {ic_refresh} from 'react-icons-kit/md/ic_refresh'
-import {ic_brush} from 'react-icons-kit/md/ic_brush'
+
 class Home extends React.Component{
     constructor(props){
         super(props)
