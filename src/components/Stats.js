@@ -144,11 +144,19 @@ class Stats extends React.Component{
                                     <option>Tagesmittelwert</option>
                                     <option>Wochenmittelwert</option>
                             </select>
+
+
                     </div>
+                    <div className="btn-group col-md-12" >
+                        <button className="button btn btn-sm" type="button" onClick={this.fetchStats} value="Apply">Apply Filter</button>
+                        <a className="button" download="story" href={this.state.href}>  
+                                    <button style={{width:'100%'}}className="btn btn-sm" value="story"> <SvgIcon size={20} icon={ic_brush}/>Download my Story</button>
+                        </a>
+                        </div>
                 </div> {/* End first row  */}
             <div id="story" className="row playground">
                 <Draggable 
-                bounds='body'
+                bounds=''
                 grid={[25,25]}
                 onStop={this.downloadFile}>
                     <div className="col-md-6 bild">
@@ -157,7 +165,10 @@ class Stats extends React.Component{
                 </Draggable>
                 <div className="form-group col-md-6">
                     <div className="input-group col-md-12">
-                        <button className="btn btn-block" type="submit" onClick={this.fetchStats} value="Apply">Apply Filter</button>
+                        <Draggable 
+                            bounds=''
+                            grid={[25,25]}
+                            onStop={this.downloadFile}>
                         <ul className="list-group analysis col-md-12">
                             <li className="list-group-item">senseBox steht an : Gasselstiege Münster</li>
                             <li className="list-group-item">nächste gelegene DWD Station ist 20km entfernt</li>
@@ -165,9 +176,7 @@ class Stats extends React.Component{
                             <li className="list-group-item">Das Monatsminimum von 20 wurde am 13.12.2018 erreicht</li>
                             <li className="list-group-item">Durchschnittlich ist es 5°C wärmer geworden</li>
                         </ul>   
-                        <a download="story" href={this.state.href}>  
-                            <button className="btn btn-block" value="story"> <SvgIcon size={20} icon={ic_brush}/>Download my Story</button>
-                        </a>
+                        </Draggable>
                     </div>
                 </div>
             </div>{/* End second row  */}

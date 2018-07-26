@@ -55,7 +55,8 @@ section .section-title {
 }
 #footer ul.social li a i {
   margin-right: 5px;
-	font-size:25px;
+  font-size:25px;
+  margin-top:5px
 	/* -webkit-transition: .5s all ease;
 	-moz-transition: .5s all ease;
 	transition: .5s all ease; */
@@ -241,6 +242,7 @@ text-align:center}
   background-color:white;
   background-size: 40px 40px;
   background-image: linear-gradient(to right, grey 1px, transparent 1px), linear-gradient(to bottom, grey 1px, transparent 1px);
+  height: 800px
 }
 .input-bar{
   background-color:rgb(39, 48, 54);
@@ -249,6 +251,6 @@ text-align:center}
   padding-right: 15px
   
 }
-.SMI{
-  border-style: solid
+.button{
+  width: 50%;
 }

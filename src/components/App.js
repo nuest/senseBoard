@@ -62,7 +62,7 @@ class App extends Component {
             </Nav>
         </SideNav>
         </div>
-        <div className="col-md-10 playground">
+        <div className="col-md-10">
             <Route exact path='/' component={Home}/>
             <Route path='/fetchBox' component={FetchBox}/>
             <Route path='/about' component={About}/>
