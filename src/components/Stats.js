@@ -8,6 +8,8 @@ import {ic_cloud_queue} from 'react-icons-kit/md/ic_cloud_queue'/* gets called f
 import {ic_brush} from 'react-icons-kit/md/ic_brush'
 import Draggable, {DraggableCore} from 'react-draggable'; // Both at the same time
 import { Resizable, ResizableBox } from 'react-resizable';
+import domtoimage from 'dom-to-image'
+import {ic_file_download} from 'react-icons-kit/md/ic_file_download'
 
 class Stats extends React.Component{
     constructor(props){
@@ -19,19 +21,19 @@ class Stats extends React.Component{
         }
         this.fetchStats = this.fetchStats.bind(this);
 
-        // this.downloadFile = this.downloadFile.bind(this)
+        this.downloadFile = this.downloadFile.bind(this)
     }
 
     componentDidMount(){
         this.props.onRef(this)
         this.fetchStats()
     }
-    // downloadFile(){
-    //     var node = document.getElementById('story');
-    //     domtoimage.toJpeg(document.getElementById('story'), { quality: 0.95 ,bgcolor:'white'})
-    //         .then((dataUrl)=>this.setState({href:dataUrl}).then(console.log(this.state.href)))
-    //         console.log("smi")
-    //     }
+    downloadFile(){
+        var node = document.getElementById('story');
+        domtoimage.toJpeg(document.getElementById('story'), { quality: 0.95 ,bgcolor:'white'})
+            .then((dataUrl)=>this.setState({href:dataUrl}).then(console.log(this.state.href)))
+            console.log("smi")
+        }
 
     fetchStats(){
         this.setState({loading:true})
@@ -58,7 +60,10 @@ class Stats extends React.Component{
             )
         }
         return(
-        <div  className="stats">           
+        <div  className="stats playground">   
+                    <a className="downloadButton" download="story" href={this.state.href}>  
+                        <button className="btn btn-sm" value="story"> <SvgIcon size={20} icon={ic_file_download}/>Download</button>
+            </a>        
             <div id="story" className="row playground">
                 <Draggable 
                 bounds=''

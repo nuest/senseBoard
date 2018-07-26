@@ -219,19 +219,24 @@ section{
 }
 #loaderdiv {   
    position: fixed;
-  top:25%;
+  top:50%;
   left:50%;
-text-align:center}
+  text-align:center}
 
 .input-addon{
   padding:6px 12px;
   background-color:#eee;
   border: 1px solid #ccc;
 }
-.des{
-  border-style: solid
+.downloadButton{
+  position: absolute;
+  top:0;
+  right:0;
+  z-index: 999;
 }
-
+.stats {
+  position: relative;
+}
 .bild{
   padding-bottom:25px
 }
@@ -253,4 +258,7 @@ text-align:center}
 }
 .button{
   width: 50%;
+}
+.btn:hover{
+  background-color: #4EAF47 ;
 }

@@ -7,7 +7,6 @@ import {ic_router} from 'react-icons-kit/md/ic_router'
 import {ic_refresh} from 'react-icons-kit/md/ic_refresh'
 import {ic_cloud_queue} from 'react-icons-kit/md/ic_cloud_queue'/* gets called from statistics with props : data */
 import {ic_brush} from 'react-icons-kit/md/ic_brush'
-import domtoimage from 'dom-to-image'
 
 class Statistics extends React.Component{
 
@@ -29,6 +28,7 @@ class Statistics extends React.Component{
             from:from,
             to:to,
             window:3600000,
+            href:''
         }
 
         this.handleChangeStart = this.handleChangeStart.bind(this);
@@ -40,6 +40,7 @@ class Statistics extends React.Component{
         this.updateInputTo = this.updateInputTo.bind(this)
         this.updateInputWindow = this.updateInputWindow.bind(this)
         this.handleClick = this.handleClick.bind(this)
+
     }//End constructor
 
     handleChangeStart(date) {
@@ -53,12 +54,6 @@ class Statistics extends React.Component{
         });
     }
 
-    downloadFile(){
-        var node = document.getElementById('story');
-        domtoimage.toJpeg(document.getElementById('story'), { quality: 0.95 ,bgcolor:'white'})
-            .then((dataUrl)=>this.setState({href:dataUrl}).then(console.log(this.state.href)))
-            console.log("smi")
-        }
 
     fetchBox(){       
         const id = '570bad2b45fd40c8197f13a2'  
@@ -131,6 +126,7 @@ class Statistics extends React.Component{
     }
     handleClick(){
         this.Stats.fetchStats()
+        
             // this.setState({
             //     clicked:true
             // })
@@ -195,10 +191,7 @@ class Statistics extends React.Component{
 
                 </div>
                 <div className="btn-group col-md-12" >
-                    <button className="button btn btn-sm" type="button" onClick={this.handleClick} value="Apply">Apply Filter</button>
-                    <a className="button" download="story" href={this.state.href}>  
-                                <button style={{width:'100%'}}className="btn btn-sm" value="story"> <SvgIcon size={20} icon={ic_brush}/>Download my Story</button>
-                    </a>
+                    <button className="btn btn-block btn-sm" type="button" onClick={this.handleClick} value="Apply">Apply Filter</button>
                     </div>
             </div> {/* End first row  */}
             <Stats onRef={ref => (this.Stats = ref )} senseBoxID={this.state.senseBoxID} phenomenon={this.state.phenomenon} lat={this.state.senseBoxData.currentLocation.coordinates[1]} lon={this.state.senseBoxData.currentLocation.coordinates[0]} from={this.state.from} to ={this.state.to} window={this.state.window}/>
