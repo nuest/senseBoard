@@ -23,34 +23,15 @@ class Home extends React.Component{
     constructor(props){
         super(props)
         this.state = {
-            modalIsOpen:false,
-            href:''
         };
-        this.openModal = this.openModal.bind(this);
-        this.afterOpenModal = this.afterOpenModal.bind(this);
-        this.closeModal = this.closeModal.bind(this);
     }
-
-    openModal() {
-        this.setState({modalIsOpen: true});
-    }
-
-    afterOpenModal() {
-    // references are now sync'd and can be accessed.
-    }
-
     closeModal() {
-    this.setState({modalIsOpen: false});
     }
 
     componentDidMount(){
     }
-    componentDidUnMount(){
-        this.setState({modalIsOpen: false});
 
-    }
     componentWillUpdate(){
-        console.log(this.state.href)
     }
 
 

@@ -6,7 +6,6 @@ import {ic_date_range} from 'react-icons-kit/md/ic_date_range'
 import {ic_router} from 'react-icons-kit/md/ic_router'
 import {ic_refresh} from 'react-icons-kit/md/ic_refresh'
 import {ic_cloud_queue} from 'react-icons-kit/md/ic_cloud_queue'/* gets called from statistics with props : data */
-import {ic_brush} from 'react-icons-kit/md/ic_brush'
 
 class Statistics extends React.Component{
 
@@ -39,6 +38,8 @@ class Statistics extends React.Component{
         this.updateInputFrom = this.updateInputFrom.bind(this)
         this.updateInputTo = this.updateInputTo.bind(this)
         this.updateInputWindow = this.updateInputWindow.bind(this)
+        this.updateExternal = this.updateExternal.bind(this)
+
         this.handleClick = this.handleClick.bind(this)
 
     }//End constructor
@@ -76,7 +77,9 @@ class Statistics extends React.Component{
             senseBoxData:json,
             loading:false,
             senseBoxID:json._id,
-            phenomenon:json.sensors[0].title
+            phenomenon:json.sensors[0].title,
+            disabled:true,
+            external:false
             }))
        // .then(this.reverseGeocoding)
     }//End fetchbox()
@@ -100,11 +103,25 @@ class Statistics extends React.Component{
         this.fetchBox()
         
     }
+    updateExternal(e){
+        const value = e.target.value
+        if(value=='Mit externer Datenquelle'){
+            this.setState({external:true})
+        }
+        if(value=='Ohne externer Datenquelle'){
+            this.setState({external:false})
+        }
+    }
     updateInputPhenom(e){
         const value = e.target.value
         this.setState(({
             phenomenon:value,
      }))
+        if(value=='Luftdruck' || value == 'Temperatur' || value == 'PM10'){
+            this.setState({
+                disabled:false
+            })
+        }
     }
     updateInputId(e){
         const value = e.target.value
@@ -175,6 +192,14 @@ class Statistics extends React.Component{
                     <input type="text" className="form-control" name="senseBoxID" onChange={this.updateInputId} value={this.state.senseBoxID} placeholder="senseBoxID"/><br></br>
                 </div>
                 <div className="input-group col-md-12">
+                        <span className="input-addon"> <SvgIcon size={20} icon={ic_router}/></span>
+                        <select onChange={this.updateExternal} className="form-control">
+                                <option disabled={this.state.disabled}>Mit externer Datenquelle</option>
+                                <option>Ohne externer Datenquelle</option>
+                                <option disabled>Wähle die Station aus mit der du vergleichen möchtest</option>
+                        </select>
+                </div>
+                <div className="input-group col-md-12">
                     <span className="input-addon"> <SvgIcon size={20} icon={ic_date_range}/></span>
                     <input className="form-control" type="date" max = {this.state.to} value={this.state.from} name="from" onChange={this.updateInputFrom} placeholder="Start"/>
                     <input className="form-control" type="date" min = {this.state.from} value={this.state.to} name="to" onChange={this.updateInputTo} placeholder="To"/>
@@ -185,16 +210,15 @@ class Statistics extends React.Component{
                         <select onChange={this.updateInputWindow} className="form-control">
                                 <option>Stundenmittelwert</option>
                                 <option>Tagesmittelwert</option>
-                                <option>Wochenmittelwert</option>
+                                <option disabled>Wochenmittelwert</option>
+                                <option disabled>10-Minutenmittelwert</option>
                         </select>
-
-
                 </div>
                 <div className="btn-group col-md-12" >
                     <button className="btn btn-block btn-sm" type="button" onClick={this.handleClick} value="Apply">Apply Filter</button>
                     </div>
             </div> {/* End first row  */}
-            <Stats onRef={ref => (this.Stats = ref )} senseBoxID={this.state.senseBoxID} phenomenon={this.state.phenomenon} lat={this.state.senseBoxData.currentLocation.coordinates[1]} lon={this.state.senseBoxData.currentLocation.coordinates[0]} from={this.state.from} to ={this.state.to} window={this.state.window}/>
+            <Stats onRef={ref => (this.Stats = ref )} senseBoxID={this.state.senseBoxID} phenomenon={this.state.phenomenon} lat={this.state.senseBoxData.currentLocation.coordinates[1]} lon={this.state.senseBoxData.currentLocation.coordinates[0]} from={this.state.from} to ={this.state.to} window={this.state.window} external={this.state.external}/>
             </div>
             )
     }

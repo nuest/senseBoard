@@ -1,11 +1,6 @@
 import React from 'react'
 import Loading from './Loading';
 import SvgIcon from 'react-icons-kit';
-import {ic_date_range} from 'react-icons-kit/md/ic_date_range'
-import {ic_router} from 'react-icons-kit/md/ic_router'
-import {ic_refresh} from 'react-icons-kit/md/ic_refresh'
-import {ic_cloud_queue} from 'react-icons-kit/md/ic_cloud_queue'/* gets called from statistics with props : data */
-import {ic_brush} from 'react-icons-kit/md/ic_brush'
 import Draggable, {DraggableCore} from 'react-draggable'; // Both at the same time
 import { Resizable, ResizableBox } from 'react-resizable';
 import domtoimage from 'dom-to-image'
@@ -37,7 +32,7 @@ class Stats extends React.Component{
 
     fetchStats(){
         this.setState({loading:true})
-        var url=this.props.senseBoxID+'/'+this.props.phenomenon+'/'+this.props.lat+'/'+this.props.lon +'/'+this.props.from+'/'+this.props.to+'/'+this.props.window
+        var url=this.props.senseBoxID+'/'+this.props.phenomenon+'/'+this.props.lat+'/'+this.props.lon +'/'+this.props.from+'/'+this.props.to+'/'+this.props.window+'/'+this.props.external
         if(this.props.phenomenon==="PM10"){
             url='python/pm10/'+url
         }
@@ -46,6 +41,7 @@ class Stats extends React.Component{
         fetch(url)
         .then((response)=>response.json())
         .then((json)=>{
+            console.log(json)
             this.setState({
                 b64image:"data:image/jpeg;base64," + json[0].substring(2,json[0].length-1)
             })
