@@ -27,6 +27,40 @@ import glob
 ####################
 today = datetime.datetime.now().replace(microsecond=0).isoformat()
 
+### Function that takes 2 arrays recognizes values with the same day and averages that day 
+### returns 2 arrays , one array with all the days and one with the averaged value of that day 
+
+def daily_mean(dates,value):
+    result = list(zip(dates,value))   
+    result2 = dict(result) 
+    dateArray=[]
+    aktuellerTag = 0
+    counter = -1
+    # print(result2)
+    for key in result2:
+            wert = result2[key]
+            datum = key
+            if datum[8:10] == '00':
+                aktuellerTag = datum[:8]
+                dateArray.append([datum[:8],wert])
+                counter = counter + 1 
+            if datum[:8] == aktuellerTag:
+                dateArray[counter].append(float(wert))
+    for item in dateArray:
+        ## Duplicate gets removed 
+        del item[1]
+    #     del item[0]
+    averageArray = []
+    datesArray = []
+    for item in dateArray:
+        sum = 0
+        for items in item[:1]:
+            datesArray.append(items)
+        for items in item[1:]:
+            sum = sum + items
+        averageArray.append(sum/(len(item)-1))
+    return(datesArray,averageArray)
+
 def distance_calc(lat1,lon1,lat2,lon2):
     # approximate radius of earth in km
     R = 6373.0
@@ -178,47 +212,55 @@ def __DWD__():
     ##### Read csv and extract data for further plotting
     dates = []
     values = []
+    buffer = 0 
+    if sys.argv[7] == '86400000':
+        buffer = 100
     with open(path+'/'+file, newline='') as csvfile:
         reader = csv.reader(csvfile, delimiter=';', quotechar='|')
         for row in reader:
             value = row[3]
             date = row[1]
             if not date == 'MESS_DATUM':
-                if float(date)>=converTime(sys.argv[5]) and float(date)<=converTime(sys.argv[6]):  
-                    dates.append(date[6:8])          
+                if float(date)>=converTime(sys.argv[5]) and float(date)<converTime(sys.argv[6])+buffer:  
+                    dates.append(date)          
                     if not value == 'TT_TU':
                         value_new = float(value.strip())
                         values.append(value_new)
     # delete files that were downloaded 
     os.remove(path+'/'+file)
     os.rmdir(path)
-    return values 
+    return (dates,values) 
 
 def __main__():
     bytes = BytesIO()
     senseBoxData = __senseBox__()[0]
+    senseBoxDatum = __senseBox__()[1]
     dates = __senseBox__()[1]
-    ticks = range(0,len(dates),floor(len(senseBoxData)/10))
-    labels=[]
-    for tick in ticks:
-        labels.append(dates[tick][5:10])
+    # ticks = range(0,len(dates),floor(len(senseBoxData)/10))
+    # labels=[]
+    # for tick in ticks:
+    #     labels.append(dates[tick][5:10])
     fig = plt.figure()
     if sys.argv[2] == 'Temperatur' or sys.argv[2] == 'Luftdruck':   
         dwdData = __DWD__()
-        ax = plt.plot(dates,senseBoxData,label="senseBox")
-        bx = plt.plot(dwdData,label="DWD")
+        if sys.argv[7] == '86400000':
+            dwdData = daily_mean(dwdData[0],dwdData[1])
+            del senseBoxDatum[len(senseBoxDatum)-1]
+            del senseBoxData[len(senseBoxData)-1]
+        ax = plt.plot(senseBoxData,label="senseBox")
+        bx = plt.plot(dwdData[1],label="DWD")
         plt.grid()
         plt.legend()
         plt.xlabel('Datum')
         plt.ylabel(sys.argv[2])
-        plt.xticks(ticks,labels)
+        # plt.xticks(ticks,labels)
         plt.savefig(bytes,format='jpg')
     else:
         plt.plot(senseBoxData)
         plt.grid()
         plt.xlabel('Datum')
         plt.ylabel(sys.argv[2])
-        plt.xticks(ticks,labels)
+        # plt.xticks(ticks,labels)
         plt.savefig(bytes,format='jpg')
     bytes.seek(0)
     encodedimg = base64.b64encode(bytes.read())
