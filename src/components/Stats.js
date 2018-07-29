@@ -13,12 +13,14 @@ class Stats extends React.Component{
             loading:false,
             b64image:null,
             href:'',
+            text:['des','smi','delen']
         }
         this.fetchStats = this.fetchStats.bind(this);
-
+        this.removep = this.removep.bind(this)
         this.downloadFile = this.downloadFile.bind(this)
     }
-
+    componentDidUpdate(){
+    }
     componentDidMount(){
         this.props.onRef(this)
         this.fetchStats()
@@ -29,6 +31,15 @@ class Stats extends React.Component{
             .then((dataUrl)=>this.setState({href:dataUrl}).then(console.log(this.state.href)))
             console.log("smi")
         }
+    removep(event) {
+        const text = event.currentTarget.textContent
+        console.log(text)
+        this.setState((currentState)=>{
+            return {
+                text:currentState.text.filter((texts)=>texts !== text)
+            }
+        })
+    }
 
     fetchStats(){
         this.setState({loading:true})
@@ -43,7 +54,8 @@ class Stats extends React.Component{
         .then((json)=>{
             console.log(json)
             this.setState({
-                b64image:"data:image/jpeg;base64," + json[0].substring(2,json[0].length-1)
+                b64image:"data:image/jpeg;base64," + json[0].substring(2,json[0].length-1),
+                text:[json[1],json[2],json[3]]
             })
         })
         .then(()=>this.setState({loading:false})).then(this.downloadFile)
@@ -68,21 +80,18 @@ class Stats extends React.Component{
                     <div className="col-md-6 bild">
                                 <img className="img" alt="Statistic" src={this.state.b64image}/>
                     </div>
-                </Draggable>
-                <div className="form-group col-md-6">
-                    <div className="input-group col-md-12">
+                    </Draggable>
+
+                    <div className="">
+                        <div className="">
+                        {this.state.text.map((text,index)=>(
                         <Draggable 
-                            bounds=''
-                            grid={[25,25]}
-                            onStop={this.downloadFile}>
-                        <ul className="list-group analysis col-md-12">
-                            <li className="list-group-item">senseBox steht an : Gasselstiege Münster</li>
-                            <li className="list-group-item">nächste gelegene DWD Station ist 20km entfernt</li>
-                            <li className="list-group-item">Das Monatsmaximum von 34 wurde am 13.12.2018 erreicht</li>
-                            <li className="list-group-item">Das Monatsminimum von 20 wurde am 13.12.2018 erreicht</li>
-                            <li className="list-group-item">Durchschnittlich ist es 5°C wärmer geworden</li>
-                        </ul>   
+                        bounds=''
+                        grid={[25,25]}
+                        onStop={this.downloadFile}>
+                            <p onClick={this.removep} key={index}>{text}</p>
                         </Draggable>
+                        ))}
                     </div>
                 </div>
             </div>{/* End second row  */}
@@ -92,3 +101,20 @@ class Stats extends React.Component{
 }
 
 export default Stats
+
+
+//
+// <div className="form-group col-md-6">
+//     <div className="input-group col-md-12">
+//         <Draggable 
+//             bounds=''
+//             grid={[25,25]}
+//             onStop={this.downloadFile}>
+//         <ul className="list-group analysis col-md-12">
+//             <li className="list-group-item">senseBox steht an : Gasselstiege Münster</li>
+//             <li className="list-group-item">nächste gelegene DWD Station ist 20km entfernt</li>
+//             <li className="list-group-item">Das Monatsmaximum von 34 wurde am 13.12.2018 erreicht</li>
+//             <li className="list-group-item">Das Monatsminimum von 20 wurde am 13.12.2018 erreicht</li>
+//             <li className="list-group-item">Durchschnittlich ist es 5°C wärmer geworden</li>
+//         </ul>   
+//         </Draggable>

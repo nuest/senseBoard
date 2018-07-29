@@ -1,23 +1,4 @@
 import React from 'react';
-import SvgIcon from 'react-icons-kit';
-import {ic_brush} from 'react-icons-kit/md/ic_brush'
-import Modal from 'react-modal'
-
-const customStyles = {
-    content : {
-        width:'1200px',
-        height:'800px',
-        color: 'green',
-      top                   : '50%',
-      left                  : '50%',
-      right                 : 'auto',
-      bottom                : 'auto',
-      marginRight           : '-50%',
-      transform             : 'translate(-50%, -50%)'
-    }
-  };
-  Modal.setAppElement('#root');
-
 
 class Home extends React.Component{
     constructor(props){

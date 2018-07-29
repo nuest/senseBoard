@@ -27,7 +27,9 @@ class Statistics extends React.Component{
             from:from,
             to:to,
             window:3600000,
-            href:''
+            href:'',
+            disabled:true,
+            external:false,
         }
 
         this.handleChangeStart = this.handleChangeStart.bind(this);
@@ -63,7 +65,7 @@ class Statistics extends React.Component{
             modalIsOpen:false
           })
 
-        const boxURL =`https://api.opensensemap.org/boxes/`+id //'+this.props.id'
+        const boxURL =`https://api.opensensemap.org/boxes/`+id // this.props.id
         fetch(boxURL)
         .catch((error) => {
             this.setState({
@@ -78,9 +80,13 @@ class Statistics extends React.Component{
             loading:false,
             senseBoxID:json._id,
             phenomenon:json.sensors[0].title,
-            disabled:true,
-            external:false
             }))
+            .then(()=>{
+                if(this.state.phenomenon ==='Luftdruck' || this.state.phenomenon  === 'Temperatur' || this.state.phenomenon  === 'PM10'){
+                    this.setState({
+                        disabled:false
+                    })}
+            })
        // .then(this.reverseGeocoding)
     }//End fetchbox()
 
@@ -105,10 +111,10 @@ class Statistics extends React.Component{
     }
     updateExternal(e){
         const value = e.target.value
-        if(value=='Mit externer Datenquelle'){
+        if(value==='Mit externer Datenquelle'){
             this.setState({external:true})
         }
-        if(value=='Ohne externer Datenquelle'){
+        if(value==='Ohne externer Datenquelle'){
             this.setState({external:false})
         }
     }
@@ -117,7 +123,7 @@ class Statistics extends React.Component{
         this.setState(({
             phenomenon:value,
      }))
-        if(value=='Luftdruck' || value == 'Temperatur' || value == 'PM10'){
+        if(value==='Luftdruck' || value === 'Temperatur' || value === 'PM10'){
             this.setState({
                 disabled:false
             })
