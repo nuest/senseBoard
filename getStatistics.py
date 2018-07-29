@@ -121,7 +121,7 @@ def nearestID(lat,lon):
     ## Getting to the right format again
     while not len(nearestID)==5:
         nearestID='0'+nearestID
-    return nearestID
+    return nearestID,distance
 
 def subtractMonth(today):
     current_month= int(today[5:7])
@@ -171,7 +171,9 @@ def __senseBox__():
 
 #####################################################
 def __DWD__():
-    stationID = nearestID(sys.argv[4],sys.argv[3])
+    id_result  = nearestID(sys.argv[3],sys.argv[4])
+    stationID = id_result[0]
+    distance = id_result [1]
     phenomenon = sys.argv[2] 
     title=''
     prefix=''
@@ -229,7 +231,7 @@ def __DWD__():
     # delete files that were downloaded 
     os.remove(path+'/'+file)
     os.rmdir(path)
-    return (dates,values) 
+    return (dates,values,distance) 
 
 def __main__():
     bytes = BytesIO()
@@ -241,7 +243,7 @@ def __main__():
     # for tick in ticks:
     #     labels.append(dates[tick][5:10])
     fig = plt.figure()
-    if sys.argv[2] == 'Temperatur' or sys.argv[2] == 'Luftdruck':   
+    if sys.argv[8]=='true':   
         dwdData = __DWD__()
         if sys.argv[7] == '86400000':
             dwdData = daily_mean(dwdData[0],dwdData[1])
@@ -249,6 +251,10 @@ def __main__():
             del senseBoxData[len(senseBoxData)-1]
         ax = plt.plot(senseBoxData,label="senseBox")
         bx = plt.plot(dwdData[1],label="DWD")
+        # print(len(senseBoxDatum),len(dwdData[0]))
+        dates =[]
+        for item in senseBoxDatum:
+            dates.append(converTime(item))
         plt.grid()
         plt.legend()
         plt.xlabel('Datum')
@@ -265,10 +271,16 @@ def __main__():
     bytes.seek(0)
     encodedimg = base64.b64encode(bytes.read())
     print(encodedimg)
+    print("Maximalwert : "+ str(max(senseBoxData)))
+    print("Minimalwert : "+ str(min(senseBoxData)))
+    if sys.argv[8] =='true':
+        print("Distanz zur DWD Station :"+str(dwdData[2])+" km")
+    
     return
+
 if len(sys.argv)>1:
     __main__()
-
+    # __analyse__()
 ###################################
 
 
