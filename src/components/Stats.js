@@ -1,8 +1,8 @@
 import React from 'react'
 import Loading from './Loading';
 import SvgIcon from 'react-icons-kit';
-import Draggable, {DraggableCore} from 'react-draggable'; // Both at the same time
-import { Resizable, ResizableBox } from 'react-resizable';
+import Draggable from 'react-draggable'; // Both at the same time
+import {ResizableBox} from 'react-resizable';
 import domtoimage from 'dom-to-image'
 import {ic_file_download} from 'react-icons-kit/md/ic_file_download'
 
@@ -13,11 +13,14 @@ class Stats extends React.Component{
             loading:false,
             b64image:null,
             href:'',
-            text:['des','smi','delen']
+            text:[{id:0,style:{color:"green",fontSize:"60pt"},text:"delehan"}],
+            clientX:1000,
+            clientY:800
         }
         this.fetchStats = this.fetchStats.bind(this);
         this.removep = this.removep.bind(this)
         this.downloadFile = this.downloadFile.bind(this)
+        this.handleResize = this.handleResize.bind(this)
     }
     componentDidUpdate(){
     }
@@ -26,17 +29,15 @@ class Stats extends React.Component{
         this.fetchStats()
     }
     downloadFile(){
-        var node = document.getElementById('story');
-        domtoimage.toJpeg(document.getElementById('story'), { quality: 0.95 ,bgcolor:'white'})
+        var story = document.getElementById('story')
+        domtoimage.toJpeg(story, { quality: 0.95 ,bgcolor:'white',width:this.state.clientX,height:this.state.clientY})
             .then((dataUrl)=>this.setState({href:dataUrl}).then(console.log(this.state.href)))
-            console.log("smi")
         }
     removep(event) {
-        const text = event.currentTarget.textContent
-        console.log(text)
+        const text = Number(event.currentTarget.id)
         this.setState((currentState)=>{
             return {
-                text:currentState.text.filter((texts)=>texts !== text)
+                text:currentState.text.filter((texts)=>texts.id !== text)
             }
         })
     }
@@ -55,12 +56,18 @@ class Stats extends React.Component{
             console.log(json)
             this.setState({
                 b64image:"data:image/jpeg;base64," + json[0].substring(2,json[0].length-1),
-                text:[json[1],json[2],json[3]]
+                // text:[json[1],json[2]]
             })
         })
         .then(()=>this.setState({loading:false})).then(this.downloadFile)
     }
-
+    handleResize(e){
+        this.setState({
+            clientX:e.explicitOriginalTarget.offsetParent.clientWidth,
+            clientY:e.explicitOriginalTarget.offsetParent.clientHeight
+        })
+        this.downloadFile()
+    }
     render(){
         if(this.state.loading){
             return(
@@ -68,53 +75,29 @@ class Stats extends React.Component{
             )
         }
         return(
-        <div  className="stats playground">   
+        <div className="stats playground">   
                     <a className="downloadButton" download="story" href={this.state.href}>  
                         <button className="btn btn-sm" value="story"> <SvgIcon size={20} icon={ic_file_download}/>Download</button>
-            </a>        
-            <div id="story" className="row playground">
-                <Draggable 
-                bounds=''
+            </a>       
+            <ResizableBox onResizeStop={this.handleResize} id="story" className="re" width={1000} height={600}> 
+            <Draggable 
+                bounds='parent'
                 grid={[25,25]}
                 onStop={this.downloadFile}>
-                    <div className="col-md-6 bild">
                                 <img className="img" alt="Statistic" src={this.state.b64image}/>
-                    </div>
-                    </Draggable>
-
-                    <div className="">
-                        <div className="">
-                        {this.state.text.map((text,index)=>(
-                        <Draggable 
-                        bounds=''
+            </Draggable>
+                    {this.state.text.map((text)=>(
+                        <Draggable key = {text.id}
+                        bounds='parent'
                         grid={[25,25]}
                         onStop={this.downloadFile}>
-                            <p onClick={this.removep} key={index}>{text}</p>
+                            <p id={text.id} className="story_content" style={{color:text.style.color , fontSize:text.style.fontSize}} onDoubleClick={this.removep}>{text.text}</p>
                         </Draggable>
                         ))}
-                    </div>
-                </div>
-            </div>{/* End second row  */}
+            </ResizableBox>
         </div>
         )
     }
 }
 
 export default Stats
-
-
-//
-// <div className="form-group col-md-6">
-//     <div className="input-group col-md-12">
-//         <Draggable 
-//             bounds=''
-//             grid={[25,25]}
-//             onStop={this.downloadFile}>
-//         <ul className="list-group analysis col-md-12">
-//             <li className="list-group-item">senseBox steht an : Gasselstiege Münster</li>
-//             <li className="list-group-item">nächste gelegene DWD Station ist 20km entfernt</li>
-//             <li className="list-group-item">Das Monatsmaximum von 34 wurde am 13.12.2018 erreicht</li>
-//             <li className="list-group-item">Das Monatsminimum von 20 wurde am 13.12.2018 erreicht</li>
-//             <li className="list-group-item">Durchschnittlich ist es 5°C wärmer geworden</li>
-//         </ul>   
-//         </Draggable>

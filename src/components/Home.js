@@ -4,7 +4,9 @@ class Home extends React.Component{
     constructor(props){
         super(props)
         this.state = {
+
         };
+
     }
     closeModal() {
     }
@@ -14,7 +16,6 @@ class Home extends React.Component{
 
     componentWillUpdate(){
     }
-
 
     render(){
         return(
