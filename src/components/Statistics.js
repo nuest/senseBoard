@@ -209,6 +209,7 @@ class Statistics extends React.Component{
                 text : currentState.text.concat({id:id,style:{color:color,fontSize:fontSize},text:input})
             }
         })
+        this.Stats.downloadFile()
     }
     updateInputWindow(e){
         const value = e.target.value

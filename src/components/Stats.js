@@ -40,6 +40,7 @@ class Stats extends React.Component{
                 text:currentState.text.filter((texts)=>texts.id !== text)
             }
         })
+        this.downloadFile()
     }
 
     fetchStats(){
