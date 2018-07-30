@@ -7,6 +7,7 @@ import domtoimage from 'dom-to-image'
 import {ic_file_download} from 'react-icons-kit/md/ic_file_download'
 import {pencil} from 'react-icons-kit/fa/pencil'
 import {image} from 'react-icons-kit/fa/image'
+import ContentEditable from 'react-contenteditable'
 
 class Stats extends React.Component{
     constructor(props){
@@ -15,13 +16,14 @@ class Stats extends React.Component{
             loading:false,
             b64image:null,
             href:'',
-            text:[{id:0,style:{color:"green",fontSize:"60pt"},text:"delehan"}],
+            text:[{id:0,style:{color:"green",fontSize:"60pt",transform:["0px","0px"]},text:"delehan"}],
             clientX:1000,
             clientY:800,
             constrainsResize:[660,500],
             input:'',
             color:'black',
-            fontSize:'36'
+            fontSize:'36',
+            length:10
         }
         this.fetchStats = this.fetchStats.bind(this);
         this.removep = this.removep.bind(this)
@@ -49,16 +51,27 @@ class Stats extends React.Component{
             .then((dataUrl)=>this.setState({href:dataUrl}))
         }
     handleChange(event){
-        console.log("handle")
         this.downloadFile()
         const text = event.currentTarget.value
+        const length = text.length
+        const id = Number(event.currentTarget.id)
+        var index = this.state.text.findIndex(x=> x.id === id);
+        var state = this.state.text[index]
+        state.text = text ;
+        this.setState({
+            text: [
+               ...this.state.text.slice(0,index),
+               Object.assign({}, this.state.text[index], state),
+               ...this.state.text.slice(index+1)
+            ]
+          });
         if(text===''){
-            this.removep(event.currentTarget.id)}
+            this.removep(id)}
     }
     removep(id) {
         this.setState((currentState)=>{
             return {
-                text:currentState.text.filter((texts)=>texts.id !== Number(id))
+                text:currentState.text.filter((texts)=>texts.id !== id)
             }
         })
         this.downloadFile()
@@ -132,7 +145,7 @@ class Stats extends React.Component{
         const id = this.state.text.length
         this.setState((currentState)=>{
             return{
-                text : currentState.text.concat({id:id,style:{color:color,fontSize:fontSize},text:input})
+                text : currentState.text.concat({id:id,style:{color:color,fontSize:fontSize,transform:["700px","-400px"]},text:input})
             }
         })
         this.downloadFile()
@@ -144,14 +157,16 @@ class Stats extends React.Component{
         })
     }
 
+
     render(){
         if(this.state.loading){
             return(
                 <Loading/>
             )
         }
+
         return(
-        <div className="stats row playground col-md-12">   
+        <div id = "ledes"className="stats row playground col-md-12">   
             <div id="story" className="re col-md-8">     
             <Draggable 
                 bounds='parent'
@@ -161,15 +176,20 @@ class Stats extends React.Component{
             </Draggable>
                     {this.state.text.map((text)=>(
                         <Draggable key = {text.id}
+                        defaultPosition={{x:0,y:0}}
+                        bounds='#ledes'
                         grid={[25,25]}
                         onStop={this.downloadFile}>
-                            <textarea spellCheck="false" onChange = {this.handleChange} rows="1" defaultValue={text.text} id={text.id} className="story_content" style={{color:text.style.color,fontSize:text.style.fontSize}}/>
+                        <div className="textareadiv">
+                        <textarea spellCheck="false" 
+                        onChange = {this.handleChange} cols={text.text.length} rows="1" defaultValue={text.text} id={text.id} className="story_content" style={{color:text.style.color,fontSize:text.style.fontSize}}/>
+                        </div>
                         </Draggable>
                         ))}
             </div>
             <div className="col-md-4">
             <div className="panel h-25">
-               <span className="panelheading"> Textelement hinzufügen</span>
+               <span className="panelheading">     Textelement hinzufügen</span>
                <hr></hr>
                 <div className="panel-body">
                     <input placeholder="Text..." className="" onChange={this.updateInput}/><br></br>
@@ -197,7 +217,7 @@ class Stats extends React.Component{
                 <button className="btn image" onClick={this.addText} > <SvgIcon size={20} icon={pencil}/>Hinzufügen</button>
                 </div>
             <div className="panel h-25">
-               <span className="panelheading"> Weitere Statistik hinzufügen</span>
+               <span className="panelheading">    Weitere Statistik hinzufügen</span>
                <hr></hr>
                 <div className="panel-body">
                     Phenomen: <select onChange={this.updateColor}>
@@ -220,3 +240,5 @@ class Stats extends React.Component{
 }
 
 export default Stats
+
+

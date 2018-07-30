@@ -296,24 +296,14 @@ section{
   background:transparent;
   border: none;
   resize: none;
+  z-index: 999;
+
 }
 .story_content::selection{
   background: #4EAF47 !important
 }
-.inner-collapse{
-  padding: 20px;
-  background: #4eaf47; 
-    background: rgba(78, 175, 71,0.9); 
-    color: white; 
-    transition: background ;
-  display: block
-}
-.Collapsible{
-  border-radius: 10px;
-  background: #ccc;
-  border:5px solid #e5e5e5;
-  padding:0px !important
-}
+
+
 .panel{
   position: relative;
   border: 2px solid black;
@@ -321,7 +311,12 @@ section{
   margin-top:10px;
   padding-bottom:220px
 }
-
+.panelheading{
+  margin: 5px
+}
+.panel-body{
+  margin:5px
+}
 hr{
   margin-top:5px !important
 }
@@ -329,4 +324,8 @@ hr{
   position: absolute;
   right: 0px;
 
+}
+.textareadiv{
+  overflow: hidden;
+  display: inline-block;
 }
