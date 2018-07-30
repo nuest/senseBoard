@@ -6,18 +6,18 @@ import {ic_date_range} from 'react-icons-kit/md/ic_date_range'
 import {ic_router} from 'react-icons-kit/md/ic_router'
 import {ic_refresh} from 'react-icons-kit/md/ic_refresh'
 import {ic_cloud_queue} from 'react-icons-kit/md/ic_cloud_queue'/* gets called from statistics with props : data */
-import Collapsible from 'react-collapsible';
 
 class Statistics extends React.Component{
 
     constructor(props){
         super(props)
+        if(props.perma=='false'){
+
         var to = new Date()
         to = to.toISOString().substring(0,10)
         var from = new Date()
         from.setMonth(from.getMonth()-1)
         from = from.toISOString().substring(0,10)
-
         this.state={
             loading:true,
             title:null,
@@ -28,10 +28,38 @@ class Statistics extends React.Component{
             from:from,
             to:to,
             window:3600000,
+            windowString:'Stundenmittelwert',
             href:'',
             disabled:true,
             external:false,
+            externalString:'Ohne externer Datenquelle',
 
+        }}
+        if(props.perma==='true'){
+            var externalString = "Ohne externer Datenquelle"
+            var windowString = 'Stundenmittelwert'
+            if(props.props.params.external==='true'){
+                externalString = "Mit externer Datenquelle"
+            }
+            if(props.props.params.window === '86400000'){
+                windowString = 'Tagesmittelwert'
+            }
+            this.state={
+                loading:true,
+                title:null,
+                url:null,
+                senseBoxData:null,
+                senseBoxID:props.props.params.id,
+                phenomenon:props.props.params.phenomenon,
+                from:props.props.params.from,
+                to:props.props.params.to,
+                window:props.props.params.window,
+                windowString:windowString,
+                href:'',
+                disabled:true,
+                external:props.props.params.external,
+                externalString:externalString
+            }
         }
 
         this.handleChangeStart = this.handleChangeStart.bind(this);
@@ -80,7 +108,6 @@ class Statistics extends React.Component{
             senseBoxData:json,
             loading:false,
             senseBoxID:json._id,
-            phenomenon:json.sensors[0].title,
             }))
             .then(()=>{
                 if(this.state.phenomenon ==='Luftdruck' || this.state.phenomenon  === 'Temperatur' || this.state.phenomenon  === 'PM10'){
@@ -172,7 +199,6 @@ class Statistics extends React.Component{
                 window = 3600000
                 break;
         }
-        console.log(window)
         this.setState(({
             window:window,
      }))
@@ -188,7 +214,7 @@ class Statistics extends React.Component{
             <div className="row input-bar">
             <div className="input-group col-md-12">
                 <span className="input-addon"> <SvgIcon size={20} icon={ic_cloud_queue}/></span>
-                    <select onChange={this.updateInputPhenom} className="form-control" id="sel1">
+                    <select defaultValue={this.state.phenomenon} onChange={this.updateInputPhenom} className="form-control" id="sel1">
                     {this.state.senseBoxData.sensors.map((sensors)=>(
                                     <option key={sensors._id}>{sensors.title}</option>
                                 ))}
@@ -200,7 +226,7 @@ class Statistics extends React.Component{
                 </div>
                 <div className="input-group col-md-12">
                         <span className="input-addon"> <SvgIcon size={20} icon={ic_router}/></span>
-                        <select onChange={this.updateExternal} className="form-control">
+                        <select defaultValue={this.state.externalString} onChange={this.updateExternal} className="form-control">
                                 <option disabled={this.state.disabled}>Mit externer Datenquelle</option>
                                 <option>Ohne externer Datenquelle</option>
                                 <option disabled>Wähle die Station aus mit der du vergleichen möchtest</option>
@@ -214,7 +240,7 @@ class Statistics extends React.Component{
 
                 <div className="input-group col-md-12">
                         <span className="input-addon"> <SvgIcon size={20} icon={ic_refresh}/></span>
-                        <select onChange={this.updateInputWindow} className="form-control">
+                        <select defaultValue={this.state.windowString} onChange={this.updateInputWindow} className="form-control">
                                 <option>Stundenmittelwert</option>
                                 <option>Tagesmittelwert</option>
                                 <option disabled>Wochenmittelwert</option>

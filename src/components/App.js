@@ -13,6 +13,7 @@ import SvgIcon from 'react-icons-kit';
 import {ic_home} from 'react-icons-kit/md/ic_home'
 import {ic_info_outline} from 'react-icons-kit/md/ic_info_outline'
 import {ic_brush} from 'react-icons-kit/md/ic_brush'
+import Permalink from './Permalink';
 const SideNav = withRR4()
 class App extends Component {
   constructor(props){
@@ -65,9 +66,9 @@ class App extends Component {
         <div className="col-md-10">
             <Route exact path='/' component={Home}/>
             <Route path='/fetchBox' component={FetchBox}/>
-            <Route path='/about' component={About}/>
+            <Route path='/about' component={About} />
             <Route path='/Home' component={Home}/>
-
+            <Route path='/Stats/:id/:phenomenon/:from/:to/:window/:external'  component={Permalink}/>
         </div>
         </div>
     <section id="footer">

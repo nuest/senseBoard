@@ -2,13 +2,11 @@ import React from 'react'
 import Loading from './Loading';
 import SvgIcon from 'react-icons-kit';
 import Draggable from 'react-draggable'; // Both at the same time
-import {ResizableBox} from 'react-resizable';
 import domtoimage from 'dom-to-image'
 import {ic_file_download} from 'react-icons-kit/md/ic_file_download'
 import {pencil} from 'react-icons-kit/fa/pencil'
 import {image} from 'react-icons-kit/fa/image'
-import ContentEditable from 'react-contenteditable'
-
+// {id:0,style:{color:"green",fontSize:"60pt",transform:["0px","0px"]},text:""}
 class Stats extends React.Component{
     constructor(props){
         super(props)
@@ -16,14 +14,13 @@ class Stats extends React.Component{
             loading:false,
             b64image:null,
             href:'',
-            text:[{id:0,style:{color:"green",fontSize:"60pt",transform:["0px","0px"]},text:"delehan"}],
+            text:[],
             clientX:1000,
             clientY:800,
             constrainsResize:[660,500],
             input:'',
             color:'black',
             fontSize:'36',
-            length:10
         }
         this.fetchStats = this.fetchStats.bind(this);
         this.removep = this.removep.bind(this)
@@ -85,6 +82,7 @@ class Stats extends React.Component{
         }
         else{url = 'python/'+url} 
         console.log(url)
+        const des = ""
         fetch(url)
         .then((response)=>response.json())
         .then((json)=>{
@@ -166,7 +164,7 @@ class Stats extends React.Component{
         }
 
         return(
-        <div id = "ledes"className="stats row playground col-md-12">   
+        <div id = "draw"className="stats row playground col-md-12">   
             <div id="story" className="re col-md-8">     
             <Draggable 
                 bounds='parent'
@@ -177,7 +175,7 @@ class Stats extends React.Component{
                     {this.state.text.map((text)=>(
                         <Draggable key = {text.id}
                         defaultPosition={{x:0,y:0}}
-                        bounds='#ledes'
+                        bounds='#draw'
                         grid={[25,25]}
                         onStop={this.downloadFile}>
                         <div className="textareadiv">
@@ -192,7 +190,7 @@ class Stats extends React.Component{
                <span className="panelheading">     Textelement hinzufügen</span>
                <hr></hr>
                 <div className="panel-body">
-                    <input placeholder="Text..." className="" onChange={this.updateInput}/><br></br>
+                    <input placeholder="Text..." className="" style={{width:'100%'}} onChange={this.updateInput}/><br></br>
                     Textfarbe: <select onChange={this.updateColor}>
                         <option>Schwarz</option>
                         <option>Blau</option>

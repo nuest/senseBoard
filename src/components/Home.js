@@ -3,6 +3,7 @@ import React from 'react';
 
 class Home extends React.Component{
     constructor(props){
+        console.log(props)
         super(props)
         this.state = {
 
