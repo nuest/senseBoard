@@ -6,6 +6,7 @@ import {ic_date_range} from 'react-icons-kit/md/ic_date_range'
 import {ic_router} from 'react-icons-kit/md/ic_router'
 import {ic_refresh} from 'react-icons-kit/md/ic_refresh'
 import {ic_cloud_queue} from 'react-icons-kit/md/ic_cloud_queue'/* gets called from statistics with props : data */
+import Collapsible from 'react-collapsible';
 
 class Statistics extends React.Component{
 
@@ -30,9 +31,7 @@ class Statistics extends React.Component{
             href:'',
             disabled:true,
             external:false,
-            input:'',
-            color:'black',
-            fontSize:'36'
+
         }
 
         this.handleChangeStart = this.handleChangeStart.bind(this);
@@ -44,11 +43,8 @@ class Statistics extends React.Component{
         this.updateInputTo = this.updateInputTo.bind(this)
         this.updateInputWindow = this.updateInputWindow.bind(this)
         this.updateExternal = this.updateExternal.bind(this)
-        this.updateInput = this.updateInput.bind(this)
-        this.addText = this.addText.bind(this)
         this.handleClick = this.handleClick.bind(this)
-        this.updateSize = this.updateSize.bind(this)
-        this.updateColor = this.updateColor.bind(this)
+
 
     }//End constructor
 
@@ -61,12 +57,6 @@ class Statistics extends React.Component{
         this.setState({
             endDate: date
         });
-    }
-    updateInput(e){
-        const value = e.target.value
-        this.setState({
-            input:value
-        })
     }
 
     fetchBox(){       
@@ -164,53 +154,7 @@ class Statistics extends React.Component{
             //     clicked:true
             // })
     }
-    updateColor(e){
-        const value = e.target.value 
-        var colorToSet = ''
-        switch(value){
-            case 'Blau':
-                colorToSet = "#0074D9"
-                break;
-            case 'Grün':
-                colorToSet="#4EAF47"
-                break;
-            case 'Rot':
-                colorToSet = "#FF4136"
-                break;
-            case 'Orange':
-                colorToSet = "#FF851B"
-                break;
-            case 'Lila':
-                colorToSet = "#B10DC9"
-                break;
-            case 'Schwarz':
-                colorToSet = "black"
-                break;
-            default:
-                colorToSet = "black"
-        }
-        this.setState({
-            color:colorToSet
-        })
-    }
-    updateSize(e){
-        const value = e.target.value
-        this.setState({
-            fontSize:value+"pt"
-        })
-    }
-    addText(){
-        const input = this.state.input
-        const color = this.state.color
-        const fontSize = this.state.fontSize
-        const id = this.Stats.state.text.length
-        this.Stats.setState((currentState)=>{
-            return{
-                text : currentState.text.concat({id:id,style:{color:color,fontSize:fontSize},text:input})
-            }
-        })
-        this.Stats.downloadFile()
-    }
+
     updateInputWindow(e){
         const value = e.target.value
         var window
@@ -280,32 +224,11 @@ class Statistics extends React.Component{
                 <div className="btn-group col-md-12" >
                     <button className="btn btn-block btn-sm" type="button" onClick={this.handleClick} value="Apply">Apply Filter</button>
                     </div>
-                <div className="input-group col-md-12">
-                    <input className="col-md-8" onChange={this.updateInput}/>
-                    <select onChange={this.updateColor}>
-                        <option>Schwarz</option>
-                        <option>Blau</option>
-                        <option>Rot</option>
-                        <option>Grün</option>
-                        <option>Orange</option>
-                        <option>Lila</option>
-                    </select>
-                    <select defaultValue="36" onChange={this.updateSize}>
-                        <option>6</option>
-                        <option>12</option>
-                        <option>18</option>
-                        <option>24</option>
-                        <option >30</option>
-                        <option>36</option>
-                        <option>42</option>
-                        <option>48</option>
-                        <option>54</option>
-                        <option>60</option>
-                    </select>
-                    <button className="col-md-2 btn btn-block" onClick={this.addText} >Add to Story</button>
-                </div>
+
             </div> {/* End first row  */}
+            <div className="row col-md-12">
             <Stats  onRef={ref => (this.Stats = ref )} senseBoxID={this.state.senseBoxID} phenomenon={this.state.phenomenon} lat={this.state.senseBoxData.currentLocation.coordinates[1]} lon={this.state.senseBoxData.currentLocation.coordinates[0]} from={this.state.from} to ={this.state.to} window={this.state.window} external={this.state.external}/>
+            </div>
             </div>
             )
     }

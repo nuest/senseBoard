@@ -1,4 +1,7 @@
 import React from 'react';
+import Collapsible from 'react-collapsible';
+
+import SvgIcon from 'react-icons-kit';
 
 class Home extends React.Component{
     constructor(props){
@@ -6,7 +9,6 @@ class Home extends React.Component{
         this.state = {
 
         };
-
     }
     closeModal() {
     }

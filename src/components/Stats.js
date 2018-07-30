@@ -5,6 +5,8 @@ import Draggable from 'react-draggable'; // Both at the same time
 import {ResizableBox} from 'react-resizable';
 import domtoimage from 'dom-to-image'
 import {ic_file_download} from 'react-icons-kit/md/ic_file_download'
+import {pencil} from 'react-icons-kit/fa/pencil'
+import {image} from 'react-icons-kit/fa/image'
 
 class Stats extends React.Component{
     constructor(props){
@@ -16,13 +18,21 @@ class Stats extends React.Component{
             text:[{id:0,style:{color:"green",fontSize:"60pt"},text:"delehan"}],
             clientX:1000,
             clientY:800,
-            constrainsResize:[660,500]
+            constrainsResize:[660,500],
+            input:'',
+            color:'black',
+            fontSize:'36'
         }
         this.fetchStats = this.fetchStats.bind(this);
         this.removep = this.removep.bind(this)
         this.downloadFile = this.downloadFile.bind(this)
         this.handleResize = this.handleResize.bind(this)
         this.handleChange = this.handleChange.bind(this)
+        this.updateSize = this.updateSize.bind(this)
+        this.updateColor = this.updateColor.bind(this)
+        this.addText = this.addText.bind(this)
+        this.updateInput = this.updateInput.bind(this)
+
     }
     componentDidUpdate(){
 
@@ -79,6 +89,61 @@ class Stats extends React.Component{
         })
         this.downloadFile()
     }
+    updateSize(e){
+        const value = e.target.value
+        this.setState({
+            fontSize:value+"pt"
+        })
+    }
+    updateColor(e){
+        const value = e.target.value 
+        var colorToSet = ''
+        switch(value){
+            case 'Blau':
+                colorToSet = "#0074D9"
+                break;
+            case 'Grün':
+                colorToSet="#4EAF47"
+                break;
+            case 'Rot':
+                colorToSet = "#FF4136"
+                break;
+            case 'Orange':
+                colorToSet = "#FF851B"
+                break;
+            case 'Lila':
+                colorToSet = "#B10DC9"
+                break;
+            case 'Schwarz':
+                colorToSet = "black"
+                break;
+            default:
+                colorToSet = "black"
+        }
+        this.setState({
+            color:colorToSet
+        })
+    }
+
+    addText(){
+        const input = this.state.input
+        const color = this.state.color
+        const fontSize = this.state.fontSize
+        const id = this.state.text.length
+        this.setState((currentState)=>{
+            return{
+                text : currentState.text.concat({id:id,style:{color:color,fontSize:fontSize},text:input})
+            }
+        })
+        this.downloadFile()
+    }
+    updateInput(e){
+        const value = e.target.value
+        this.setState({
+            input:value
+        })
+    }
+
     render(){
         if(this.state.loading){
             return(
@@ -86,10 +151,7 @@ class Stats extends React.Component{
             )
         }
         return(
-        <div className="stats playground">   
-            <a className="downloadButton" download="story" href={this.state.href}>  
-                        <button className="btn btn-sm" value="story"> <SvgIcon size={20} icon={ic_file_download}/>Download</button>
-            </a>  
+        <div className="stats row playground col-md-12">   
             <div id="story" className="re col-md-8">     
             <Draggable 
                 bounds='parent'
@@ -105,6 +167,53 @@ class Stats extends React.Component{
                         </Draggable>
                         ))}
             </div>
+            <div className="col-md-4">
+            <div className="panel h-25">
+               <span className="panelheading"> Textelement hinzufügen</span>
+               <hr></hr>
+                <div className="panel-body">
+                    <input placeholder="Text..." className="" onChange={this.updateInput}/><br></br>
+                    Textfarbe: <select onChange={this.updateColor}>
+                        <option>Schwarz</option>
+                        <option>Blau</option>
+                        <option>Rot</option>
+                        <option>Grün</option>
+                        <option>Orange</option>
+                        <option>Lila</option>
+                    </select><br></br>
+                    Schriftgröße: <select defaultValue="36" onChange={this.updateSize}>
+                        <option>6</option>
+                        <option>12</option>
+                        <option>18</option>
+                        <option>24</option>
+                        <option >30</option>
+                        <option>36</option>
+                        <option>42</option>
+                        <option>48</option>
+                        <option>54</option>
+                        <option>60</option>
+                    </select><br></br>
+                </div>
+                <button className="btn image" onClick={this.addText} > <SvgIcon size={20} icon={pencil}/>Hinzufügen</button>
+                </div>
+            <div className="panel h-25">
+               <span className="panelheading"> Weitere Statistik hinzufügen</span>
+               <hr></hr>
+                <div className="panel-body">
+                    Phenomen: <select onChange={this.updateColor}>
+                        <option>Temperatur</option>
+                        <option>rel. Luftfeuchte</option>
+                        <option>PM10</option>
+                        <option>PM25</option>
+                        <option>Luftdruck</option>
+                    </select><br></br>
+                </div>
+                <button className="btn image disabled" onClick={this.addText} > <SvgIcon size={20} icon={image}/>Hinzufügen</button>
+                </div>
+                <a className="downloadButton col-md-12" download="story" href={this.state.href}>  
+                        <button className="btn btn-block btn-sm" value="story"> <SvgIcon size={20} icon={ic_file_download}/>Download</button>
+            </a>  
+        </div>
         </div>
         )
     }

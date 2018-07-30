@@ -229,10 +229,14 @@ section{
   border: 1px solid #ccc;
 }
 .downloadButton{
+  display: block;
+  float: right;
+  padding:0px !important
+}
+.image{
   position: absolute;
-  top:0;
-  right:0;
-  z-index: 999;
+  right: 0px;
+  bottom: 2px;
 }
 .stats {
   position: relative;
@@ -291,7 +295,38 @@ section{
 .story_content{
   background:transparent;
   border: none;
+  resize: none;
 }
 .story_content::selection{
   background: #4EAF47 !important
+}
+.inner-collapse{
+  padding: 20px;
+  background: #4eaf47; 
+    background: rgba(78, 175, 71,0.9); 
+    color: white; 
+    transition: background ;
+  display: block
+}
+.Collapsible{
+  border-radius: 10px;
+  background: #ccc;
+  border:5px solid #e5e5e5;
+  padding:0px !important
+}
+.panel{
+  position: relative;
+  border: 2px solid black;
+  border-radius: 10px;
+  margin-top:10px;
+  padding-bottom:220px
+}
+
+hr{
+  margin-top:5px !important
+}
+.pencil{
+  position: absolute;
+  right: 0px;
+
 }
