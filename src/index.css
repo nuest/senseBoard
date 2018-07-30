@@ -251,7 +251,10 @@ section{
 #story{
   /* background-image: linear-gradient(to right, grey 1px, transparent 1px), linear-gradient(to bottom, grey 1px, transparent 1px); */
   border:1px black solid;
-  background-color: #f3f3f3
+  background-color: #f3f3f3;
+  margin-top:10px;
+  padding-top:5px;
+  height: 85%
 
 }
 .input-bar{
@@ -286,5 +289,9 @@ section{
   cursor: se-resize;
 }
 .story_content{
-  display: inline-block 
+  background:transparent;
+  border: none;
+}
+.story_content::selection{
+  background: #4EAF47 !important
 }
