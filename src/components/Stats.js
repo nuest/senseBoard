@@ -235,13 +235,15 @@ class Stats extends React.Component{
                <span className="panelheading">    Weitere Statistik hinzufügen</span>
                <hr></hr>
                 <div className="panel-body">
-                    Phenomen: <select onChange={this.updateColor}>
+                    Phänomen: <select onChange={this.updateColor}>
                         <option>Temperatur</option>
                         <option>rel. Luftfeuchte</option>
                         <option>PM10</option>
                         <option>PM25</option>
                         <option>Luftdruck</option>
                     </select><br></br>
+                    Mit DWD Daten :<input type="checkbox"/><br></br>
+                    Mit senseBox Daten : <input type="checkbox"/>
                 </div>
                 <button className="btn image disabled" onClick={this.addText} > <SvgIcon size={20} icon={image}/>Hinzufügen</button>
                 </div>

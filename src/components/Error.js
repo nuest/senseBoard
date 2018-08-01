@@ -8,6 +8,8 @@ export default function Error(props){
             <ul>
                 <li>0: Dieses Problem liegt an einer fehlerhaften Anfrage an die openSenseMap. Bitte überprüfen sie alle Eingabeparameter und versuchen
                     Sie es erneut. Wichtig: Von und Bis Datum dürfen nicht gleich sein !  </li>
+                <li>List index out of range: Bitte überprüfe ob für den Zeitraum den du angegeben hast, Daten von der senseBox vorhanden sind.
+                       War/ist die senseBox offline ?     </li>
             </ul>
         </div>
 }

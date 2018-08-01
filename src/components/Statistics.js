@@ -176,6 +176,13 @@ class Statistics extends React.Component{
                 disabled:false
             })
         }
+        else{
+            document.getElementById("select").selectedIndex = 1
+            this.setState({
+                disabled:true,
+                external:false
+            })
+        }
     }
     updateInputId(e){
         const value = e.target.value
