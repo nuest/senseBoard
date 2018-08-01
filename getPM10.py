@@ -190,11 +190,11 @@ def __main__():
         #     labels.append(luftDates[tick][0:5])
         ax = plt.plot(luftValues,label="Daten Umweltbundesamt")
     bx = plt.plot(senseBoxData_Data,label="Daten senseBox ")
-    axes = plt.gca()
     ##maxarr = [max(senseBoxData),max(luftValues)]
     plt.grid()
     plt.legend()
     plt.xlabel('Datum')
+    plt.xticks([0,floor(len(senseBoxData_Data)/4),floor(len(senseBoxData_Data)/2),floor(len(senseBoxData_Data)/1.333),len(senseBoxData_Data)-1],[senseBoxData_Dates[0][:10],senseBoxData_Dates[floor(len(senseBoxData_Data)/4)][:10],senseBoxData_Dates[floor(len(senseBoxData_Data)/2)][:10],senseBoxData_Dates[floor(len(senseBoxData_Data)/1.333)][:10],senseBoxData_Dates[floor(len(senseBoxData_Data)-1)][:10]])
     plt.ylabel('PM10 in µg/m3')
     # plt.xticks(ticks,labels)
     plt.savefig(bytes,format='jpg')

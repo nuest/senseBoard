@@ -258,11 +258,13 @@ def __main__():
         plt.grid()
         plt.legend()
         plt.xlabel('Datum')
+        plt.xticks([0,floor(len(senseBoxData)/4),floor(len(senseBoxData)/2),floor(len(senseBoxData)/1.333),len(senseBoxData)-1],[senseBoxDatum[0][:10],senseBoxDatum[floor(len(senseBoxData)/4)][:10],senseBoxDatum[floor(len(senseBoxData)/2)][:10],senseBoxDatum[floor(len(senseBoxData)/1.333)][:10],senseBoxDatum[floor(len(senseBoxData)-1)][:10]])
         plt.ylabel(sys.argv[2])
         # plt.xticks(ticks,labels)
         plt.savefig(bytes,format='jpg')
     else:
         plt.plot(senseBoxData)
+        plt.xticks([0,floor(len(senseBoxData)/4),floor(len(senseBoxData)/2),floor(len(senseBoxData)/1.333),len(senseBoxData)-1],[senseBoxDatum[0][:10],senseBoxDatum[floor(len(senseBoxData)/4)][:10],senseBoxDatum[floor(len(senseBoxData)/2)][:10],senseBoxDatum[floor(len(senseBoxData)/1.333)][:10],senseBoxDatum[floor(len(senseBoxData)-1)][:10]])
         plt.grid()
         plt.xlabel('Datum')
         plt.ylabel(sys.argv[2])
