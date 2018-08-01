@@ -180,20 +180,40 @@ class Statistics extends React.Component{
             // this.setState({
             //     clicked:true
             // })
-    }
+    }// localhost:3000/Stats/570bad2b45fd40c8197f13a2/Luftdruck/2018-06-30/2018-07-30/360000/false
 
+    componentDidUpdate(){
+        if(this.state.loading=== false){
+        this.Stats.setState ({
+            permalink:"localhost:3000/Stats/"+this.state.senseBoxID+"/"+this.state.phenomenon+"/"+this.state.from+"/"+this.state.to+"/"+this.state.window+"/"+this.state.external
+        })}
+    }
     updateInputWindow(e){
         const value = e.target.value
         var window
         switch(value){
             case 'Stundenmittelwert':
                 window = 3600000
+                this.setState({
+                    disabled:false,
+                })
                 break;
             case 'Tagesmittelwert':
                 window= 86400000
+                this.setState({
+                    disabled:false,
+                })
                 break;
             case 'Wochenmittelwert':
                 window = 604800000
+                break;
+            case '10-Minutenmittelwert':
+                window = 600000
+                this.setState({
+                    disabled:true,
+                    external:false
+                })
+                document.getElementById("select").selectedIndex = 1
                 break;
             default  :
                 window = 3600000
@@ -214,7 +234,8 @@ class Statistics extends React.Component{
             <div className="row input-bar">
             <div className="input-group col-md-12">
                 <span className="input-addon"> <SvgIcon size={20} icon={ic_cloud_queue}/></span>
-                    <select defaultValue={this.state.phenomenon} onChange={this.updateInputPhenom} className="form-control" id="sel1">
+                    <select  onChange={this.updateInputPhenom} className="form-control" id="sel1">
+                        <option>-----Wähle ein Phenomen aus -----</option>
                     {this.state.senseBoxData.sensors.map((sensors)=>(
                                     <option key={sensors._id}>{sensors.title}</option>
                                 ))}
@@ -226,7 +247,7 @@ class Statistics extends React.Component{
                 </div>
                 <div className="input-group col-md-12">
                         <span className="input-addon"> <SvgIcon size={20} icon={ic_router}/></span>
-                        <select defaultValue={this.state.externalString} onChange={this.updateExternal} className="form-control">
+                        <select id="select" defaultValue={this.state.externalString} onChange={this.updateExternal} className="form-control">
                                 <option disabled={this.state.disabled}>Mit externer Datenquelle</option>
                                 <option>Ohne externer Datenquelle</option>
                                 <option disabled>Wähle die Station aus mit der du vergleichen möchtest</option>
@@ -244,7 +265,7 @@ class Statistics extends React.Component{
                                 <option>Stundenmittelwert</option>
                                 <option>Tagesmittelwert</option>
                                 <option disabled>Wochenmittelwert</option>
-                                <option disabled>10-Minutenmittelwert</option>
+                                <option >10-Minutenmittelwert</option>
                         </select>
                 </div>
                 <div className="btn-group col-md-12" >
@@ -253,7 +274,7 @@ class Statistics extends React.Component{
 
             </div> {/* End first row  */}
             <div className="row col-md-12">
-            <Stats  onRef={ref => (this.Stats = ref )} senseBoxID={this.state.senseBoxID} phenomenon={this.state.phenomenon} lat={this.state.senseBoxData.currentLocation.coordinates[1]} lon={this.state.senseBoxData.currentLocation.coordinates[0]} from={this.state.from} to ={this.state.to} window={this.state.window} external={this.state.external}/>
+            <Stats  perma={this.props.perma} onRef={ref => (this.Stats = ref )} senseBoxID={this.state.senseBoxID} phenomenon={this.state.phenomenon} lat={this.state.senseBoxData.currentLocation.coordinates[1]} lon={this.state.senseBoxData.currentLocation.coordinates[0]} from={this.state.from} to ={this.state.to} window={this.state.window} external={this.state.external}/>
             </div>
             </div>
             )

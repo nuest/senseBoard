@@ -6,6 +6,7 @@ import domtoimage from 'dom-to-image'
 import {ic_file_download} from 'react-icons-kit/md/ic_file_download'
 import {pencil} from 'react-icons-kit/fa/pencil'
 import {image} from 'react-icons-kit/fa/image'
+import Error from './Error';
 // {id:0,style:{color:"green",fontSize:"60pt",transform:["0px","0px"]},text:""}
 class Stats extends React.Component{
     constructor(props){
@@ -21,7 +22,11 @@ class Stats extends React.Component{
             input:'',
             color:'black',
             fontSize:'36',
-        }
+            permalink:"",
+            error:false,
+            errorInfo:""
+
+            }
         this.fetchStats = this.fetchStats.bind(this);
         this.removep = this.removep.bind(this)
         this.downloadFile = this.downloadFile.bind(this)
@@ -38,7 +43,8 @@ class Stats extends React.Component{
     }
     componentDidMount(){
         this.props.onRef(this)
-        this.fetchStats()
+        if(this.props.perma=="true")
+            this.fetchStats()
     }
     downloadFile(){
         var story = document.getElementById('story')
@@ -75,17 +81,24 @@ class Stats extends React.Component{
     }
 
     fetchStats(){
-        this.setState({loading:true})
+        this.setState({loading:true,error:false})
         var url=this.props.senseBoxID+'/'+this.props.phenomenon+'/'+this.props.lat+'/'+this.props.lon +'/'+this.props.from+'/'+this.props.to+'/'+this.props.window+'/'+this.props.external
         if(this.props.phenomenon==="PM10"){
             url='python/pm10/'+url
         }
         else{url = 'python/'+url} 
         console.log(url)
-        const des = ""
         fetch(url)
         .then((response)=>response.json())
         .then((json)=>{
+            console.log(json)
+            if(json[0].substring(0,5)=="Error"){
+                this.setState({
+                    error:true,
+                    errorInfo:json[0]
+                })
+                return
+            }
             this.setState({
                 b64image:"data:image/jpeg;base64," + json[0].substring(2,json[0].length-1),
                 // text:[json[1],json[2]]
@@ -105,7 +118,7 @@ class Stats extends React.Component{
         this.setState({
             fontSize:value+"pt"
         })
-    }
+    }//python/570bad2b45fd40c8197f13a2/Luftdruck/51.974581/7.607807/2018-06-30/2018-07-30/360000/false
     updateColor(e){
         const value = e.target.value 
         var colorToSet = ''
@@ -162,7 +175,11 @@ class Stats extends React.Component{
                 <Loading/>
             )
         }
-
+        if(this.state.error){
+            return(
+                <Error errorInfo={this.state.errorInfo}/>
+            )
+        }
         return(
         <div id = "draw"className="stats row playground col-md-12">   
             <div id="story" className="re col-md-8">     
@@ -170,13 +187,13 @@ class Stats extends React.Component{
                 bounds='parent'
                 grid={[25,25]}
                 onStop={this.downloadFile}>
-                                <img id="bild" className="img" alt="Statistic" src={this.state.b64image}/>
+                                <img id="bild" className="img" alt="Bitte gebe deine Parameter oben ein und drücke auf 'Filter übernehmen'!" src={this.state.b64image}/>
             </Draggable>
                     {this.state.text.map((text)=>(
                         <Draggable key = {text.id}
                         defaultPosition={{x:0,y:0}}
                         bounds='#draw'
-                        grid={[25,25]}
+                        grid={[10,10]}
                         onStop={this.downloadFile}>
                         <div className="textareadiv">
                         <textarea spellCheck="false" 
@@ -231,6 +248,8 @@ class Stats extends React.Component{
                 <a className="downloadButton col-md-12" download="story" href={this.state.href}>  
                         <button className="btn btn-block btn-sm" value="story"> <SvgIcon size={20} icon={ic_file_download}/>Download</button>
             </a>  
+            <textarea className="perma col-md-12" spellCheck="false" rows="1" cols="4" defaultValue={this.state.permalink}/>
+
         </div>
         </div>
         )
