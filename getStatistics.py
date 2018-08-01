@@ -273,13 +273,17 @@ def __main__():
     print(encodedimg)
     print("Maximalwert : "+ str(max(senseBoxData)))
     print("Minimalwert : "+ str(min(senseBoxData)))
-    if sys.argv[8] =='true':
-        print("Distanz zur DWD Station :"+str(dwdData[2])+" km")
+   # if sys.argv[8] =='true':
+        # print("Distanz zur DWD Station :"+str(dwdData[2])+" km")
     
     return
 
 if len(sys.argv)>1:
-    __main__()
+    try:
+        __main__()
+
+    except Exception as identifier:
+        print("Error:"+str(identifier))
     # __analyse__()
 ###################################
 

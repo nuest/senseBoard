@@ -206,4 +206,8 @@ def __main__():
     
 
 if len(sys.argv)>1:
-    __main__()
+    try:
+        __main__()
+
+    except Exception as identifier:
+        print("Error:"+str(identifier))

@@ -22,6 +22,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/python', statisticsRouter);
 app.use('/python/pm10', pm10Router);
+app.use('/Stats/python',statisticsRouter)
+app.use('/Stats/python/pm10',pm10Router)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
