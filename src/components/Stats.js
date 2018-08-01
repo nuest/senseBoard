@@ -48,30 +48,30 @@ class Stats extends React.Component{
     }
     downloadFile(){
         var story = document.getElementById('story')
-
-        //width:this.state.clientX,height:this.state.clientY}
-        domtoimage.toJpeg(story, { quality: 0.95,width:1800,height:story.clientHeight})
+        //width:this.state.clientX,height:this.state.clientY}width:1800,height:story.clientHeight  { quality: 0.95,}
+        domtoimage.toJpeg(story,{ quality: 0.95,width:1255,height:story.clientHeight,bgcolor:"#f3f3f3",style:{border:"0px"}})
             .then((dataUrl)=>this.setState({href:dataUrl}))
         }
     handleChange(event){
-        this.downloadFile()
-        const text = event.currentTarget.value
-        const length = text.length
-        const id = Number(event.currentTarget.id)
-        var index = this.state.text.findIndex(x=> x.id === id);
-        var state = this.state.text[index]
-        state.text = text ;
-        this.setState({
-            text: [
-               ...this.state.text.slice(0,index),
-               Object.assign({}, this.state.text[index], state),
-               ...this.state.text.slice(index+1)
-            ]
-          });
-        if(text===''){
-            this.removep(id)}
+        // this.downloadFile()
+        // const text = event.currentTarget.value
+        // const length = text.length
+        // const id = Number(event.currentTarget.id)
+        // var index = this.state.text.findIndex(x=> x.id === id);
+        // var state = this.state.text[index]
+        // state.text = text ;
+        // this.setState({
+        //     text: [
+        //        ...this.state.text.slice(0,index),
+        //        Object.assign({}, this.state.text[index], state),
+        //        ...this.state.text.slice(index+1)
+        //     ]
+        //   });
+        // if(text===''){
+        //     this.removep(id)}
     }
-    removep(id) {
+    removep(e) {
+        const id= Number(e.currentTarget.id)
         this.setState((currentState)=>{
             return {
                 text:currentState.text.filter((texts)=>texts.id !== id)
@@ -192,13 +192,10 @@ class Stats extends React.Component{
                     {this.state.text.map((text)=>(
                         <Draggable key = {text.id}
                         defaultPosition={{x:0,y:0}}
-                        bounds='#draw'
+                        bounds='#story'
                         grid={[10,10]}
                         onStop={this.downloadFile}>
-                        <div className="textareadiv">
-                        <textarea spellCheck="false" 
-                        onChange = {this.handleChange} cols={text.text.length} rows="1" defaultValue={text.text} id={text.id} className="story_content" style={{color:text.style.color,fontSize:text.style.fontSize}}/>
-                        </div>
+                        <div id={text.id} className="textareadiv story_content" onDoubleClick={this.removep} style={{color:text.style.color,fontSize:text.style.fontSize}}>{text.text}</div>
                         </Draggable>
                         ))}
             </div>
