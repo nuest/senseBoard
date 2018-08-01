@@ -99,7 +99,7 @@ class FetchBox extends React.Component{
                     </form>
                 </Modal>
                 <Route path='/Overview' 
-                component={() => (<Statistics perma="false" id={this.state.input}
+                component={() => (<Statistics perma="false" id='570bad2b45fd40c8197f13a2'
                     />)}
                 />
             </div>

@@ -5,7 +5,21 @@ import SvgIcon from 'react-icons-kit';
 import {ic_date_range} from 'react-icons-kit/md/ic_date_range'
 import {ic_router} from 'react-icons-kit/md/ic_router'
 import {ic_refresh} from 'react-icons-kit/md/ic_refresh'
-import {ic_cloud_queue} from 'react-icons-kit/md/ic_cloud_queue'/* gets called from statistics with props : data */
+import {ic_cloud_queue} from 'react-icons-kit/md/ic_cloud_queue'
+import Modal from 'react-modal'
+
+
+const customStyles = {
+    content : {
+        color: 'green',
+      top                   : '50%',
+      left                  : '50%',
+      right                 : 'auto',
+      bottom                : 'auto',
+      marginRight           : '-50%',
+      transform             : 'translate(-50%, -50%)'
+    }
+  };
 
 class Statistics extends React.Component{
 
@@ -23,7 +37,7 @@ class Statistics extends React.Component{
             title:null,
             url:null,
             senseBoxData:null,
-            senseBoxID:null,
+            senseBoxID:this.props.id,
             phenomenon:null,
             from:from,
             to:to,
@@ -33,6 +47,8 @@ class Statistics extends React.Component{
             disabled:true,
             external:false,
             externalString:'Ohne externer Datenquelle',
+            modalIsOpen:false,
+
 
         }}
         if(props.perma==='true'){
@@ -58,7 +74,9 @@ class Statistics extends React.Component{
                 href:'',
                 disabled:true,
                 external:props.props.params.external,
-                externalString:externalString
+                externalString:externalString,
+                modalIsOpen:false,
+
             }
         }
 
@@ -72,8 +90,10 @@ class Statistics extends React.Component{
         this.updateInputWindow = this.updateInputWindow.bind(this)
         this.updateExternal = this.updateExternal.bind(this)
         this.handleClick = this.handleClick.bind(this)
-
-
+        this.changeBox = this.changeBox.bind(this)
+        this.openModal = this.openModal.bind(this);
+        this.afterOpenModal = this.afterOpenModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
     }//End constructor
 
     handleChangeStart(date) {
@@ -94,7 +114,7 @@ class Statistics extends React.Component{
             modalIsOpen:false
           })
 
-        const boxURL =`https://api.opensensemap.org/boxes/`+id // this.props.id
+        const boxURL =`https://api.opensensemap.org/boxes/`+this.state.senseBoxID
         fetch(boxURL)
         .catch((error) => {
             this.setState({
@@ -175,6 +195,11 @@ class Statistics extends React.Component{
             to:value,
      }))
     }
+    changeBox(){
+        console.log(this.state.senseBoxID)
+        this.setState({senseBoxID:'5b2293071fef04001bdb5659'},()=>{this.fetchBox()})
+        
+    }
     handleClick(){
         this.Stats.fetchStats()
             // this.setState({
@@ -223,6 +248,21 @@ class Statistics extends React.Component{
             window:window,
      }))
     }
+    openModal() {
+        this.setState({modalIsOpen: true});
+    }
+
+    afterOpenModal() {
+    // references are now sync'd and can be accessed.
+    this.subtitle.style.color = '#4EAF47';
+    }
+
+    closeModal() {
+    this.setState({modalIsOpen: false});
+    this.fetchBox()
+   
+}
+
     render(){
         if(this.state.loading === true ){
             return(
@@ -231,20 +271,48 @@ class Statistics extends React.Component{
         }
         return(
             <div>
+                             <Modal
+                isOpen={this.state.modalIsOpen}
+                onAfterOpen={this.afterOpenModal}
+                onRequestClose={this.closeModal}
+                style={customStyles}
+                contentLabel="Modal"
+                >
+                                    <h2 
+                        style={{color:'#4EAF47'}}
+                        ref={subtitle => this.subtitle = subtitle}>
+                    Gebe eine neue senseBoxID ein!
+                    </h2>
+                    <form>
+                        <input 
+                            type='text'
+                            placeholder='Id'
+                            value={this.state.senseBoxID}
+                            onChange={this.updateInputId}
+                        />
+                            <button 
+                                onClick={()=>this.closeModal()} 
+                                className="btn header-btn"
+                                type="button">
+                                Go!
+                            </button>
+                    </form>
+                </Modal>
             <div className="row input-bar">
+            <div className="input-group col-md-12">
+                    <span className="input-addon"> <SvgIcon size={20} icon={ic_router}/></span>
+                    <input type="text" disabled="true" className="form-control" name="senseBoxID" defaultValue={this.state.senseBoxData.name} placeholder="senseBoxID"/><br></br>
+                    <button onClick={this.openModal} className="btn"> Andere senseBox </button>
+                </div>
             <div className="input-group col-md-12">
                 <span className="input-addon"> <SvgIcon size={20} icon={ic_cloud_queue}/></span>
                     <select  onChange={this.updateInputPhenom} className="form-control" id="sel1">
-                        <option>-----Wähle ein Phenomen aus -----</option>
+                        <option>-----Wähle ein Phänomen aus -----</option>
                     {this.state.senseBoxData.sensors.map((sensors)=>(
                                     <option key={sensors._id}>{sensors.title}</option>
                                 ))}
                     </select>
             </div>
-                <div className="input-group col-md-12">
-                    <span className="input-addon"> <SvgIcon size={20} icon={ic_router}/></span>
-                    <input type="text" className="form-control" name="senseBoxID" onChange={this.updateInputId} value={this.state.senseBoxID} placeholder="senseBoxID"/><br></br>
-                </div>
                 <div className="input-group col-md-12">
                         <span className="input-addon"> <SvgIcon size={20} icon={ic_router}/></span>
                         <select id="select" defaultValue={this.state.externalString} onChange={this.updateExternal} className="form-control">

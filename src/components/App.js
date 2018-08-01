@@ -68,6 +68,7 @@ class App extends Component {
             <Route path='/fetchBox' component={FetchBox}/>
             <Route path='/about' component={About} />
             <Route path='/Home' component={Home}/>
+            
             <Route path='/Stats/:id/:phenomenon/:from/:to/:window/:external'  component={Permalink}/>
         </div>
         </div>
