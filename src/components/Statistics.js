@@ -321,14 +321,6 @@ class Statistics extends React.Component{
                     </select>
             </div>
                 <div className="input-group col-md-12">
-                        <span className="input-addon"> <SvgIcon size={20} icon={ic_router}/></span>
-                        <select id="select" defaultValue={this.state.externalString} onChange={this.updateExternal} className="form-control">
-                                <option disabled={this.state.disabled}>Mit externer Datenquelle</option>
-                                <option>Ohne externer Datenquelle</option>
-                                <option disabled>Wähle die Station aus mit der du vergleichen möchtest</option>
-                        </select>
-                </div>
-                <div className="input-group col-md-12">
                     <span className="input-addon"> <SvgIcon size={20} icon={ic_date_range}/></span>
                     <input className="form-control" type="date" max = {this.state.to} value={this.state.from} name="from" onChange={this.updateInputFrom} placeholder="Start"/>
                     <input className="form-control" type="date" min = {this.state.from} value={this.state.to} name="to" onChange={this.updateInputTo} placeholder="To"/>
@@ -341,6 +333,13 @@ class Statistics extends React.Component{
                                 <option>Tagesmittelwert</option>
                                 <option disabled>Wochenmittelwert</option>
                                 <option >10-Minutenmittelwert</option>
+                        </select>
+                </div>
+                <div className="input-group col-md-12">
+                        <span className="input-addon"> <SvgIcon size={20} icon={ic_router}/></span>
+                        <select id="select" defaultValue={this.state.externalString} onChange={this.updateExternal} className="form-control">
+                                <option disabled={this.state.disabled}>Mit externer Datenquelle</option>
+                                <option>Ohne externer Datenquelle</option>
                         </select>
                 </div>
                 <div className="btn-group col-md-12" >

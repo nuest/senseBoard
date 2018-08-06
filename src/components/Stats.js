@@ -7,6 +7,7 @@ import {ic_file_download} from 'react-icons-kit/md/ic_file_download'
 import {pencil} from 'react-icons-kit/fa/pencil'
 import {image} from 'react-icons-kit/fa/image'
 import Error from './Error';
+import {Rnd} from 'react-rnd' 
 // {id:0,style:{color:"green",fontSize:"60pt",transform:["0px","0px"]},text:""}
 class Stats extends React.Component{
     constructor(props){
@@ -21,10 +22,11 @@ class Stats extends React.Component{
             constrainsResize:[660,500],
             input:'',
             color:'black',
-            fontSize:'36',
+            fontSize:'42',
             permalink:"",
             error:false,
-            errorInfo:""
+            errorInfo:"",
+            suggestions:[]
 
             }
         this.fetchStats = this.fetchStats.bind(this);
@@ -36,7 +38,7 @@ class Stats extends React.Component{
         this.updateColor = this.updateColor.bind(this)
         this.addText = this.addText.bind(this)
         this.updateInput = this.updateInput.bind(this)
-
+        this.changeSuggestion = this.changeSuggestion.bind(this)
     }
     componentDidUpdate(){
 
@@ -99,12 +101,19 @@ class Stats extends React.Component{
                 })
                 return
             }
+            var suggestion = json[1]
+            suggestion = suggestion.replace("[","")
+            suggestion = suggestion.replace("]","")
+            suggestion = suggestion.replace(/'/g,"")
+            suggestion = suggestion.split(",")
             this.setState({
                 b64image:"data:image/jpeg;base64," + json[0].substring(2,json[0].length-1),
-                // text:[json[1],json[2]]
+                suggestions:suggestion
             })
-        })
-        .then(()=>this.setState({loading:false})).then(this.downloadFile)
+
+            }
+    )
+        .then(()=>this.setState({loading:false})).then(this.downloadFile).then(console.log(this.state.suggestions))
     }
     handleResize(e){
         this.setState({
@@ -115,8 +124,22 @@ class Stats extends React.Component{
     }
     updateSize(e){
         const value = e.target.value
+        var fontSize = 0 
+        switch(value){
+            case 'Überschrift':
+                fontSize = 60
+                break;
+            case 'Begleittext':
+                fontSize = 42
+                break;
+            case 'Untertitel':
+                 fontSize = 36
+                 break;
+            default:
+                fontSize = 42
+        }
         this.setState({
-            fontSize:value+"pt"
+            fontSize:fontSize+"pt"
         })
     }//python/570bad2b45fd40c8197f13a2/Luftdruck/51.974581/7.607807/2018-06-30/2018-07-30/360000/false
     updateColor(e){
@@ -167,6 +190,12 @@ class Stats extends React.Component{
             input:value
         })
     }
+    changeSuggestion(e){
+        const value = e.target.value
+        this.setState({
+            input:value
+        })
+    }
 
 
     render(){
@@ -183,12 +212,19 @@ class Stats extends React.Component{
         return(
         <div id = "draw"className="stats row playground col-md-12">   
             <div id="story" className="re col-md-8">     
-            <Draggable 
+            {/* <Draggable 
                 bounds='parent'
                 grid={[25,25]}
                 onStop={this.downloadFile}>
                                 <img id="bild" className="img" alt="Bitte gebe deine Parameter oben ein und drücke auf 'Filter übernehmen'!" src={this.state.b64image}/>
-            </Draggable>
+            </Draggable> */}
+                <Rnd
+                bounds='parent'
+                grid={[25,25]}
+                onResizeStop={this.downloadFile}
+                onDragStop={this.downloadFile}>
+                <img id="bild" className="img" alt="Bitte gebe deine Parameter oben ein und drücke auf 'Filter übernehmen'!" src={this.state.b64image}/>
+                </Rnd>
                     {this.state.text.map((text)=>(
                         <Draggable key = {text.id}
                         defaultPosition={{x:0,y:0}}
@@ -200,11 +236,11 @@ class Stats extends React.Component{
                         ))}
             </div>
             <div className="col-md-4">
-            <div className="panel h-25">
+            <div className="panel h-50">
                <span className="panelheading">     Textelement hinzufügen</span>
                <hr></hr>
                 <div className="panel-body">
-                    <input placeholder="Text..." className="" style={{width:'100%'}} onChange={this.updateInput}/><br></br>
+                    <input placeholder="Text..." className="" value={this.state.input} style={{width:'100%'}} onChange={this.updateInput}/><br></br>
                     Textfarbe: <select onChange={this.updateColor}>
                         <option>Schwarz</option>
                         <option>Blau</option>
@@ -213,22 +249,21 @@ class Stats extends React.Component{
                         <option>Orange</option>
                         <option>Lila</option>
                     </select><br></br>
-                    Schriftgröße: <select defaultValue="36" onChange={this.updateSize}>
-                        <option>6</option>
-                        <option>12</option>
-                        <option>18</option>
-                        <option>24</option>
-                        <option >30</option>
-                        <option>36</option>
-                        <option>42</option>
-                        <option>48</option>
-                        <option>54</option>
-                        <option>60</option>
+                    Schriftgröße: <select defaultValue="Begleittext" onChange={this.updateSize}>
+                        <option>Überschrift</option>
+                        <option>Begleittext</option>
+                        <option>Untertitel</option>
                     </select><br></br>
+                    Vorschläge: <select defaultValue="Vorschläge für Texte" onChange={this.changeSuggestion}>
+                    <option>Vorschläge für Texte</option>
+                    {this.state.suggestions.map((suggestion,index)=>(
+                                    <option key={index}>{suggestion}</option>
+                                ))}
+                    </select>
                 </div>
                 <button className="btn image" onClick={this.addText} > <SvgIcon size={20} icon={pencil}/>Hinzufügen</button>
                 </div>
-            <div className="panel h-25">
+            {/* <div className="panel h-25">
                <span className="panelheading">    Weitere Statistik hinzufügen</span>
                <hr></hr>
                 <div className="panel-body">
@@ -243,7 +278,7 @@ class Stats extends React.Component{
                     Mit senseBox Daten : <input type="checkbox"/>
                 </div>
                 <button className="btn image disabled" onClick={this.addText} > <SvgIcon size={20} icon={image}/>Hinzufügen</button>
-                </div>
+                </div> */}
                 <a className="downloadButton col-md-12" download="story" href={this.state.href}>  
                         <button className="btn btn-block btn-sm" value="story"> <SvgIcon size={20} icon={ic_file_download}/>Download</button>
             </a>  
