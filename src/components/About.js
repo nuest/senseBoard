@@ -4,6 +4,12 @@ import React from 'react'
 export default function About(){
     return <div> <h1>About</h1>
     
-    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate</p>    
+        Dieses Projekt wurde im Rahmen einer Bachelorarbeit am Institut für Geoinformatik entwickelt.<br></br><br></br>
+        <br></br>
+        <h3 style={{color:'#4EAF47'}} >Kontakt</h3>
+        <p>Name: Eric Thieme-Garmann</p>
+        <p>Addresse: Gescherweg 35 48161 Münster</p>
+        <p>Email: e_thie10@uni-muenster.de </p>
+
     </div>
 }

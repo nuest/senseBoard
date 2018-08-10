@@ -7,7 +7,8 @@ import {ic_file_download} from 'react-icons-kit/md/ic_file_download'
 import {pencil} from 'react-icons-kit/fa/pencil'
 import {image} from 'react-icons-kit/fa/image'
 import Error from './Error';
-import {Rnd} from 'react-rnd' 
+import {Rnd} from 'react-rnd'
+import html2canvas from 'html2canvas' 
 // {id:0,style:{color:"green",fontSize:"60pt",transform:["0px","0px"]},text:""}
 class Stats extends React.Component{
     constructor(props){
@@ -16,7 +17,9 @@ class Stats extends React.Component{
             loading:false,
             b64image:null,
             href:'',
-            text:[],
+            text:[{id:0,style:{color:"#4EAF47",fontSize:"40pt",transform:["0px","0px"]},text:"Hier werden deine Textelemente und die Statistiken angezeigt. Mit einem Doppelklick lässt du diesen Text hier verschwinden!"},
+                    {id:1,style:{color:"#45beed",fontSize:"40pt",transform:["0px","0px"]},text:"Wähle die Parameter für die Statistiken aus und klicke auf 'Filter übernehmen'"},
+                    {id:2,style:{color:"#4EAF47",fontSize:"40pt",transform:["0px","0px"]},text:"Mit 'Download' machst du einen Snapshot und lädtst den Inhalt dieser Box als .jpg runter"}],
             clientX:1000,
             clientY:800,
             constrainsResize:[660,500],
@@ -47,13 +50,25 @@ class Stats extends React.Component{
         this.props.onRef(this)
         if(this.props.perma=="true")
             this.fetchStats()
+        this.downloadFile()
     }
     downloadFile(){
-        var story = document.getElementById('story')
-        //width:this.state.clientX,height:this.state.clientY}width:1800,height:story.clientHeight  { quality: 0.95,}
-        domtoimage.toJpeg(story,{ quality: 0.95,width:1255,height:story.clientHeight,bgcolor:"#f3f3f3",style:{border:"0px"}})
-            .then((dataUrl)=>this.setState({href:dataUrl}))
-        }
+        // var story = document.getElementById('story')
+        // var draw = document.getElementById('draw')
+        // //width:this.state.clientX,height:this.state.clientY}width:1800,height:story.clientHeight  { quality: 0.95,} width:1255,height:story.clientHeight,
+        // domtoimage.toJpeg(story,{bgcolor:"#f3f3f3",style:{border:"0px"}})
+        //     .then((dataUrl)=>this.setState({href:dataUrl}))
+        //
+        html2canvas(document.querySelector("#story")).then(canvas => {
+            console.log(canvas)
+            var download = document.getElementById("download")
+            var image = canvas.toDataURL("image/png")
+                .replace("image/png","image/octet-stream");
+                    download.setAttribute("href",image);
+        });
+
+
+    }
     handleChange(event){
         // this.downloadFile()
         // const text = event.currentTarget.value
@@ -83,7 +98,7 @@ class Stats extends React.Component{
     }
 
     fetchStats(){
-        this.setState({loading:true,error:false})
+        this.setState({loading:true,error:false,text:[]})
         var url=this.props.senseBoxID+'/'+this.props.phenomenon+'/'+this.props.lat+'/'+this.props.lon +'/'+this.props.from+'/'+this.props.to+'/'+this.props.window+'/'+this.props.external
         if(this.props.phenomenon==="PM10"){
             url='python/pm10/'+url
@@ -133,7 +148,7 @@ class Stats extends React.Component{
                 fontSize = 42
                 break;
             case 'Untertitel':
-                 fontSize = 36
+                 fontSize = 26
                  break;
             default:
                 fontSize = 42
@@ -147,13 +162,13 @@ class Stats extends React.Component{
         var colorToSet = ''
         switch(value){
             case 'Blau':
-                colorToSet = "#0074D9"
+                colorToSet = "#45beed"
                 break;
             case 'Grün':
                 colorToSet="#4EAF47"
                 break;
             case 'Rot':
-                colorToSet = "#FF4136"
+                colorToSet = "#d75a4a"
                 break;
             case 'Orange':
                 colorToSet = "#FF851B"
@@ -223,11 +238,10 @@ class Stats extends React.Component{
                 grid={[25,25]}
                 onResizeStop={this.downloadFile}
                 onDragStop={this.downloadFile}>
-                <img id="bild" className="img" alt="Bitte gebe deine Parameter oben ein und drücke auf 'Filter übernehmen'!" src={this.state.b64image}/>
+                <img id="bild" className="img" alt=" " src={this.state.b64image}/>
                 </Rnd>
                     {this.state.text.map((text)=>(
                         <Draggable key = {text.id}
-                        defaultPosition={{x:0,y:0}}
                         bounds='#story'
                         grid={[10,10]}
                         onStop={this.downloadFile}>
@@ -277,10 +291,10 @@ class Stats extends React.Component{
                     Mit DWD Daten :<input type="checkbox"/><br></br>
                     Mit senseBox Daten : <input type="checkbox"/>
                 </div>
-                <button className="btn image disabled" onClick={this.addText} > <SvgIcon size={20} icon={image}/>Hinzufügen</button>
+                <button className="btn image disabled" onClick={this.addText} > <SvgIcon size={20} icon={image}/>Hinzufügen</button> href={this.state.href
                 </div> */}
-                <a className="downloadButton col-md-12" download="story" href={this.state.href}>  
-                        <button className="btn btn-block btn-sm" value="story"> <SvgIcon size={20} icon={ic_file_download}/>Download</button>
+                <a id="download" className="downloadButton col-md-12" download="story.png">  
+                        <button onClick={this.downloadFile} className="btn btn-block btn-sm" value="story"> <SvgIcon size={20} icon={ic_file_download}/>Download</button>
             </a>  
             <textarea className="perma col-md-12" spellCheck="false" rows="1" cols="4" defaultValue={this.state.permalink}/>
 

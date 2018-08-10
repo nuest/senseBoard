@@ -309,7 +309,7 @@ class Statistics extends React.Component{
             <div className="input-group col-md-12">
                     <span className="input-addon"> <SvgIcon size={20} icon={ic_router}/></span>
                     <input type="text" disabled="true" className="form-control" name="senseBoxID" defaultValue={this.state.senseBoxData.name} placeholder="senseBoxID"/><br></br>
-                    <button onClick={this.openModal} className="btn"> Andere senseBox </button>
+                    <button onClick={this.openModal} className="btn"> Ändere senseBox </button>
                 </div>
             <div className="input-group col-md-12">
                 <span className="input-addon"> <SvgIcon size={20} icon={ic_cloud_queue}/></span>
@@ -343,7 +343,7 @@ class Statistics extends React.Component{
                         </select>
                 </div>
                 <div className="btn-group col-md-12" >
-                    <button className="btn btn-block btn-sm" type="button" onClick={this.handleClick} value="Apply">Apply Filter</button>
+                    <button className="btn btn-block btn-sm" type="button" onClick={this.handleClick} value="Apply">Filter übernehmen</button>
                     </div>
 
             </div> {/* End first row  */}
