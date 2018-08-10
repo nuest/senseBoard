@@ -11,9 +11,13 @@ import datetime
 import json
 from pyproj import Proj,transform
 from math import sin, floor,cos, sqrt, atan2, radians
+from geopy.geocoders import Nominatim
+geolocator = Nominatim(user_agent="Story_Dashboard_senseBox")
 
 today = datetime.datetime.now().replace(microsecond=0).isoformat()
-
+analyseStrings=[]
+lat_umweltbundesamt = 0 
+lon_umweltbundesamt = 0 
 def transformToWGS():
     array = []
     with open("ressources/validStations.csv","r") as csv_file:
@@ -52,9 +56,12 @@ def getNearest(lat,lon):
     wgsStations = transformToWGS()
     nearestId = 0 
     distance = 50000000000
+
     for station in wgsStations:
         actualdistance = distance_calc(float(lat),float(lon),float(station[2]),float(station[1]))
         if actualdistance<distance:
+            lat_umweltbundesamt = station[2]
+            lon_umweltbundesamt = station[1]
             nearestId = station[0]
             distance = actualdistance
     return nearestId
@@ -125,6 +132,7 @@ def daily_mean(dates,value):
 ################################
 
 def __luft__():
+
     id = getNearest(sys.argv[3],sys.argv[4])
     url ="https://www.opengeodata.nrw.de/produkte/umwelt_klima/luftqualitaet/luqs/konti_nach_station/OpenKontiLUQS_"+id+"_aktuell.csv"
     response= requests.get(url)
@@ -145,8 +153,10 @@ def __luft__():
         time = item[1].replace(':','')
         date = date + time[:2]
         if(float(date)>= converTime(sys.argv[5]) and float(date)<=converTime(sys.argv[6])):
-            if(not item[5][:1]=='<'):
+            if(not item[5][:1]=='<' and not item[5]==''):
                 values.append(int(item[5]))
+
+
                 dates.append(date)
     return dates,values
 
@@ -170,6 +180,7 @@ def __senseBox__():
 
 
 def __main__():
+    
     bytes = BytesIO()
     senseBoxData = __senseBox__()
     senseBoxData_Dates = senseBoxData[0]
@@ -181,7 +192,6 @@ def __main__():
             luftData = daily_mean(luftData[0],luftData[1])
         luftDates = luftData[0]
         luftValues = luftData[1]
-
         # divider = math.floor(len(luftValues)/10)
         
         # ticks = range(0,len(luftValues)-1,125)
@@ -201,7 +211,25 @@ def __main__():
     bytes.seek(0)
     encodedimg = base64.b64encode(bytes.read())
     print(encodedimg)
+    analyseStrings.append("Maximalwert senseBox  "+ str(round(max(senseBoxData_Data),1)))
+    analyseStrings.append("Minmalwert senseBox "+ str(round(min(senseBoxData_Data),1)))
 
+    location_senseBox = geolocator.reverse((sys.argv[3],sys.argv[4]))
+    location_senseBox= location_senseBox.address
+    location_senseBox = location_senseBox.split(',')
+    location_senseBox ="senseBox Standort: " + location_senseBox[1]+location_senseBox[5]+location_senseBox[8]
+    analyseStrings.append(location_senseBox)
+
+    if sys.argv[8] =='true':
+        analyseStrings.append("Maximalwert Umweltbundesamt "+str(max(luftValues)))
+        analyseStrings.append("Minimalwert Umweltbundesamt "+str(min(luftValues)))
+        location_dwd = geolocator.reverse((lat_umweltbundesamt,lon_umweltbundesamt))
+        location_dwd = location_dwd.address
+        location_dwd = location_dwd.split(',')
+        location_dwd = "DWD Station Standort: " +location_dwd[0]+location_dwd[3]+location_dwd[6]
+        analyseStrings.append(location_dwd)
+
+    print(analyseStrings)
     return
     
 

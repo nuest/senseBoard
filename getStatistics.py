@@ -7,6 +7,9 @@ import csv
 if(len(sys.argv)>1):
     import matplotlib.pyplot as plt
     import matplotlib.image as mpimg
+    from geopy.geocoders import Nominatim
+    geolocator = Nominatim(user_agent="Story_Dashboard_senseBox")
+
 import base64
 
 import requests
@@ -26,6 +29,8 @@ import glob
     #     print (str)
 ####################
 today = datetime.datetime.now().replace(microsecond=0).isoformat()
+analyseStrings=[]
+
 
 ### Function that takes 2 arrays recognizes values with the same day and averages that day 
 ### returns 2 arrays , one array with all the days and one with the averaged value of that day 
@@ -117,11 +122,12 @@ def nearestID(lat,lon):
         lone = float(data[2][i])
         if distance>distance_calc(float(lat),float(lon),late,lone):
             distance = distance_calc(float(lat),float(lon),late,lone)
+            latlon = [late,lone]
             nearestID=id
     ## Getting to the right format again
     while not len(nearestID)==5:
         nearestID='0'+nearestID
-    return nearestID,distance
+    return nearestID,distance,latlon
 
 def subtractMonth(today):
     current_month= int(today[5:7])
@@ -174,6 +180,7 @@ def __DWD__():
     id_result  = nearestID(sys.argv[3],sys.argv[4])
     stationID = id_result[0]
     distance = id_result [1]
+    latlon = id_result[2]
     phenomenon = sys.argv[2] 
     title=''
     prefix=''
@@ -231,7 +238,7 @@ def __DWD__():
     # delete files that were downloaded 
     os.remove(path+'/'+file)
     os.rmdir(path)
-    return (dates,values,distance) 
+    return (dates,values,distance,latlon) 
 
 def __main__():
     bytes = BytesIO()
@@ -273,11 +280,26 @@ def __main__():
     bytes.seek(0)
     encodedimg = base64.b64encode(bytes.read())
     print(encodedimg)
-    print("Maximalwert : "+ str(max(senseBoxData)))
-    print("Minimalwert : "+ str(min(senseBoxData)))
-   # if sys.argv[8] =='true':
-        # print("Distanz zur DWD Station :"+str(dwdData[2])+" km")
-    
+    analyseStrings.append("Maximalwert senseBox  "+ str(round(max(senseBoxData),1)))
+    analyseStrings.append("Minmalwert senseBox "+ str(round(min(senseBoxData),1)))
+    location_senseBox = geolocator.reverse((sys.argv[3],sys.argv[4]))
+    location_senseBox= location_senseBox.address
+    location_senseBox = location_senseBox.split(',')
+    location_senseBox ="senseBox Standort: " + location_senseBox[1]+location_senseBox[5]+location_senseBox[8]
+    analyseStrings.append(location_senseBox)
+
+
+    if sys.argv[8] =='true':
+        analyseStrings.append("Maximalwert DWD "+str(max(dwdData[1])))
+        analyseStrings.append("Minimalwert DWD "+str(min(dwdData[1])))
+        location_dwd = geolocator.reverse((dwdData[3][0],dwdData[3][1]))
+        location_dwd = location_dwd.address
+        location_dwd = location_dwd.split(',')
+        location_dwd = "DWD Station Standort: " +location_dwd[0]+location_dwd[3]+location_dwd[6]
+        analyseStrings.append(location_dwd)
+        analyseStrings.append("Distanz zur DWD Station :"+str(dwdData[2])+" km")
+
+    print(analyseStrings)
     return
 
 if len(sys.argv)>1:
