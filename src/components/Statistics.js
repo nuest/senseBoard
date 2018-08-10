@@ -331,7 +331,6 @@ class Statistics extends React.Component{
                         <select defaultValue={this.state.windowString} onChange={this.updateInputWindow} className="form-control">
                                 <option>Stundenmittelwert</option>
                                 <option>Tagesmittelwert</option>
-                                <option disabled>Wochenmittelwert</option>
                                 <option >10-Minutenmittelwert</option>
                         </select>
                 </div>

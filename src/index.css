@@ -249,8 +249,9 @@ section{
   padding-bottom:25px
 }
 .carousel{
-  width:600px;
-  margin-left:200px;
+  width:1000px;
+  margin-left:50px;
+  margin-top:100px;
   padding:10px
   
 }

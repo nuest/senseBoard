@@ -64,6 +64,8 @@ class FetchBox extends React.Component{
     }
 
     render(){ 
+
+
         return (
         <BrowserRouter>
             <div>
@@ -79,7 +81,7 @@ class FetchBox extends React.Component{
                         ref={subtitle => this.subtitle = subtitle}>
                         Gebe deine senseBox Id ein 
                     </h2>
-                    <div style={{color:'black'}} >Jede senseBox hat eine eigene ID mit der sie von anderen unterscheiden kannst! Suche die ID die der Box raus die analysieren möchtest und klicke auf 'Suche'<br></br>
+                    <div style={{color:'black'}} >Jede senseBox hat eine eigene ID mit der du sie von den anderen unterscheiden kannst! Suche die ID die der Box raus die du analysieren möchtest und klicke auf 'Suche'<br></br>
                             <br></br>Solltest du gerade keine ID parat haben, kannst du dir von dieser Liste ein paar interessante Boxen raussuchen:
                             <ul>
                                 <li>Münster Süd: 5a30ea5375a96c000f012fe0 </li>
@@ -87,7 +89,7 @@ class FetchBox extends React.Component{
                                 <li> Berlin Friedrichshain: 5b5e071441718300198cc5f0 </li>
                             </ul>
                             <br></br>
-                            Gehe auf die <a href="www.opensensemap.org"> openSenseMap </a> und finde eine senseBox in deiner Nähe
+                            Gehe auf die <a href="https://www.opensensemap.org"> openSenseMap </a> und finde eine senseBox in deiner Nähe
                             <br></br>
                     </div>
                     <form class="modalBox">
@@ -116,8 +118,8 @@ class FetchBox extends React.Component{
             </div>
 
         </BrowserRouter>
-    )
-    }//End Render
+    )}
+    //End Render
 }//End Class
 
 export default FetchBox
