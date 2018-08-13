@@ -50,7 +50,6 @@ class Stats extends React.Component{
         this.props.onRef(this)
         if(this.props.perma=="true")
             this.fetchStats()
-        this.downloadFile()
     }
     downloadFile(){
         // var story = document.getElementById('story')
@@ -65,6 +64,8 @@ class Stats extends React.Component{
             var image = canvas.toDataURL("image/png")
                 .replace("image/png","image/octet-stream");
                     download.setAttribute("href",image);
+                    download.click()
+
         });
 
 
@@ -94,7 +95,6 @@ class Stats extends React.Component{
                 text:currentState.text.filter((texts)=>texts.id !== id)
             }
         })
-        this.downloadFile()
     }
 
     fetchStats(){
@@ -128,7 +128,7 @@ class Stats extends React.Component{
 
             }
     )
-        .then(()=>this.setState({loading:false})).then(this.downloadFile).then(console.log(this.state.suggestions))
+        .then(()=>this.setState({loading:false})).then(console.log(this.state.suggestions))
     }
     handleResize(e){
         this.setState({
@@ -236,15 +236,15 @@ class Stats extends React.Component{
                 <Rnd
                 bounds='parent'
                 grid={[25,25]}
-                onResizeStop={this.downloadFile}
-                onDragStop={this.downloadFile}>
+                
+                >
                 <img id="bild" className="img" alt=" " src={this.state.b64image}/>
                 </Rnd>
                     {this.state.text.map((text)=>(
                         <Draggable key = {text.id}
                         bounds='#story'
                         grid={[10,10]}
-                        onStop={this.downloadFile}>
+                        >
                         <div id={text.id} className="textareadiv story_content" onDoubleClick={this.removep} style={{color:text.style.color,fontSize:text.style.fontSize}}>{text.text}</div>
                         </Draggable>
                         ))}
@@ -293,8 +293,9 @@ class Stats extends React.Component{
                 </div>
                 <button className="btn image disabled" onClick={this.addText} > <SvgIcon size={20} icon={image}/>Hinzufügen</button> href={this.state.href
                 </div> */}
-                <a id="download" className="downloadButton col-md-12" download="story.png">  
-                        <button onClick={this.downloadFile} className="btn btn-block btn-sm" value="story"> <SvgIcon size={20} icon={ic_file_download}/>Download</button>
+                <button onClick={this.downloadFile} className="btn btn-block btn-sm" value="story"> <SvgIcon size={20} icon={ic_file_download}/>Download</button>
+
+                <a id="download" style={{display:'none'}} className="downloadButton col-md-12" download="story.png"> des 
             </a>  
             <textarea className="perma col-md-12" spellCheck="false" rows="1" cols="4" defaultValue={this.state.permalink}/>
 
