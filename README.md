@@ -5,7 +5,7 @@ The application is hosted online can be accessed over : [senseBoard](www.link.de
 The research conducted alongside the development of this application can be found [here](www.des.org)
 
 ## Setting up the application for development 
-
+Please keep in mind to download both branches for front-end and back-end.
 ### Front-End
 Built with React to display everything, makes calls through a proxy to a node.js server. To run the development server for React run the following commands from the senseBoard_frontend folder : 
 ``` 
