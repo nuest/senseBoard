@@ -12,12 +12,6 @@ Built with NodeJS to act as an API whcih the front-end can call. Scripts for sta
 ### How to 
 To start the Back-End Server make sure you have python3 and NodeJS installed. If so run the following commands:
 
-
- 	``` 
-    	npm install
-        
-    ```
-    afterwards 
     ```
     	PORT=3001 node bin/www
     
