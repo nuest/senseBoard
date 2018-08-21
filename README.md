@@ -1,8 +1,8 @@
 # senseBoard
 Story-Board for the senseBox. Developed with for my bachelor thesis
 Repository has 2 different sections : front-end and back-end
-The application is hosted online can be accessed over : [senseBoard](www.link.de)
-The research conducted alongside the development of this application can be found [here](www.des.org)
+The application is hosted online can be accessed over : [senseBoard](#)
+The research conducted alongside the development of this application can be found [here](#)
 
 ## Setting up the application for development 
 Please keep in mind to download both branches for front-end and back-end.
