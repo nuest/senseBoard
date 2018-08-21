@@ -25,7 +25,7 @@ class Stats extends React.Component{
             constrainsResize:[660,500],
             input:'',
             color:'black',
-            fontSize:'42',
+            fontSize:'60pt',
             permalink:"",
             error:false,
             errorInfo:"",
@@ -135,21 +135,23 @@ class Stats extends React.Component{
             clientX:e.explicitOriginalTarget.offsetParent.clientWidth,
             clientY:e.explicitOriginalTarget.offsetParent.clientHeight
         })
-        this.downloadFile()
     }
     updateSize(e){
         const value = e.target.value
         var fontSize = 0 
         switch(value){
-            case 'Überschrift':
+            case 'Überschrift(60)':
                 fontSize = 60
                 break;
-            case 'Begleittext':
+            case 'Sehr groß(42)':
                 fontSize = 42
                 break;
-            case 'Untertitel':
-                 fontSize = 26
+            case 'Groß(32)':
+                 fontSize = 32
                  break;
+            case 'Klein(20)':
+            fontSize = 20
+            break;
             default:
                 fontSize = 42
         }
@@ -197,7 +199,7 @@ class Stats extends React.Component{
                 text : currentState.text.concat({id:id,style:{color:color,fontSize:fontSize,transform:["700px","-400px"]},text:input})
             }
         })
-        this.downloadFile()
+        
     }
     updateInput(e){
         const value = e.target.value
@@ -238,7 +240,7 @@ class Stats extends React.Component{
                 grid={[25,25]}
                 
                 >
-                <img id="bild" className="img" alt=" " src={this.state.b64image}/>
+                <img draggable="false" id="bild" className="img" alt=" " src={this.state.b64image}/>
                 </Rnd>
                     {this.state.text.map((text)=>(
                         <Draggable key = {text.id}
@@ -264,9 +266,10 @@ class Stats extends React.Component{
                         <option>Lila</option>
                     </select><br></br>
                     Schriftgröße: <select defaultValue="Begleittext" onChange={this.updateSize}>
-                        <option>Überschrift</option>
-                        <option>Begleittext</option>
-                        <option>Untertitel</option>
+                        <option>Überschrift(60)</option>
+                        <option>Sehr groß(42)</option>
+                        <option>Groß(32)</option>
+                        <option>Klein(20)</option>
                     </select><br></br>
                     Vorschläge: <select defaultValue="Vorschläge für Texte" onChange={this.changeSuggestion}>
                     <option>Vorschläge für Texte</option>

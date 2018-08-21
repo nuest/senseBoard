@@ -322,7 +322,7 @@ class Statistics extends React.Component{
             </div>
                 <div className="input-group col-md-12">
                     <span className="input-addon"> <SvgIcon size={20} icon={ic_date_range}/></span>
-                    <input className="form-control" type="date" max = {this.state.to} value={this.state.from} name="from" onChange={this.updateInputFrom} placeholder="Start"/>
+                    <input className="form-control" defaultValue type="date" max = {this.state.to} value={this.state.from} name="from" onChange={this.updateInputFrom} placeholder="Start"/>
                     <input className="form-control" type="date" min = {this.state.from} value={this.state.to} name="to" onChange={this.updateInputTo} placeholder="To"/>
                 </div>
 

@@ -51,6 +51,7 @@ class FetchBox extends React.Component{
     }
 
     updateInput(e){
+        console.log(this.state.senseboxid)
         const value = e.target.value
         this.setState(({
             input:value,
@@ -92,7 +93,7 @@ class FetchBox extends React.Component{
                             Gehe auf die <a href="https://www.opensensemap.org"> openSenseMap </a> und finde eine senseBox in deiner Nähe
                             <br></br>
                     </div>
-                    <form class="modalBox">
+                    <form className="modalBox">
                         <input 
                             style={{width:'90%'}}
                             type='text'
@@ -112,7 +113,7 @@ class FetchBox extends React.Component{
                     </form>
                 </Modal>
                 <Route path='/Overview' 
-                component={() => (<Statistics perma="false" id='570bad2b45fd40c8197f13a2'
+                component={() => (<Statistics perma="false" id={this.state.input}
                     />)}
                 />
             </div>
