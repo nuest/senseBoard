@@ -29,7 +29,7 @@ The user interface should open automatically at [http://localhost:3000](http://l
 Built with NodeJS to act as an API which the front-end can call.
 Scripts for statistics rendering are in Python.
 
-To start the backend server make sure you have `python3` and NodeJS installed.
+To start the backend server make sure you have `python3` and `python3-tk` (system dependencies) with `matplotlib` and `geopy` (from PyPi) and NodeJS installed.
 If so run the following commands from the `backend` folder:
 
 ```bash
